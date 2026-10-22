@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1b2a4a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EBD Bela Rosa">
+<title>Escola Bíblica Dominical - Assembleia de Deus Bela Rosa</title>
+<style>
+:root{--ink:#1b2a4a;--ink2:#2c3f6b;--gold:#b58a2e;--bg:#f4f5f8;--card:#fff;--line:#d9dde7;--ok:#2e7d52;--no:#b3392f}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,sans-serif;background:var(--bg);color:#1d2230}
+header{background:var(--ink);color:#fff;padding:18px 20px 0;border-bottom:4px solid var(--gold)}
+header h1{margin:0 0 12px;font:600 1.5rem Georgia,serif}
+header h1 small{display:block;font:500 .8rem system-ui,sans-serif;letter-spacing:1.5px;color:#e0c37a;margin-top:2px}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav button{border:0;background:transparent;color:#c9d1e6;padding:10px 14px;font:inherit;cursor:pointer;border-radius:8px 8px 0 0;white-space:nowrap}
+nav button.on{background:var(--bg);color:var(--ink);font-weight:600}
+main{max-width:1000px;margin:0 auto;padding:18px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+h2{font:600 1.2rem Georgia,serif;margin:0 0 12px;color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;flex:1;min-width:140px;background:#fff}
+textarea{width:100%;min-height:90px}
+button.b{background:var(--ink);color:#fff;border:0;padding:9px 14px;border-radius:8px;font:inherit;cursor:pointer}
+button.b:hover{background:var(--ink2)}
+button.g{background:var(--gold)}
+button.x{background:none;border:0;color:var(--no);cursor:pointer;font-size:1.1rem}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);gap:8px}
+li small{color:#667}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center;white-space:nowrap}
+td:first-child,th:first-child{text-align:left;position:sticky;left:0;background:#fff}
+td.c{cursor:pointer;user-select:none;width:46px}
+.P{background:#dff2e6;color:var(--ok);font-weight:700}.F{background:#f8dedb;color:var(--no);font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.two{grid-template-columns:1fr}}
+.pct{font-weight:700}
+#pv{position:fixed;inset:0;z-index:50;background:#20263a;display:flex;flex-direction:column}#pv[hidden]{display:none}
+#pvb{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;background:var(--ink);color:#fff}
+#pvb button{background:#2c3f6b;color:#fff;border:0;border-radius:8px;padding:8px 12px;font:inherit;cursor:pointer}
+#pvb button.g{background:var(--gold)}#pvt{flex:1;min-width:120px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pvc{flex:1;overflow:auto;padding:8px;text-align:center}#pvcv{background:#fff;box-shadow:0 2px 12px #0006;max-width:none}
+.rp{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px}
+.rp h2{text-align:center;margin:0}.rp h3{margin:18px 0 6px;font:600 1rem Georgia,serif;color:var(--ink);border-bottom:2px solid var(--gold)}
+.rp .sub{text-align:center;color:#556;margin:0 0 10px}.rp table{font-size:.82rem}.rp tr{page-break-inside:avoid}
+.rp .kv{display:flex;gap:18px;flex-wrap:wrap;font-size:.9rem}
+.bd{background:#fff6dd;border:1px solid var(--gold);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.bd[hidden]{display:none}
+.lb{display:flex;flex-direction:column;font-size:.8rem;color:#667;flex:1;min-width:140px}.lb input{min-width:0}
+.dias label{display:flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:.9rem}
+.dias input{flex:none;min-width:0}
+.wa{background:#1f9d57;color:#fff;text-decoration:none;padding:7px 12px;border-radius:8px;font-size:.9rem}
+.muted{color:#667;font-size:.9rem}
+#pr{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.cert{width:1123px;height:794px;zoom:.3;background:#fff;border:14px double var(--gold);padding:50px 80px;text-align:center;font-family:Georgia,serif;color:var(--ink);display:flex;flex-direction:column;justify-content:space-between;page-break-after:always}
+.cert{position:relative;overflow:hidden}
+.cert>*{position:relative;z-index:1}
+.cert>.bg{position:absolute;inset:0;z-index:0;background:var(--bi,none) var(--bx,50%) var(--by,50%)/cover no-repeat;transform:scale(var(--bz,1));opacity:var(--bo,.3);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.sl label{font-size:.85rem;color:#556;display:block}.sl input{width:100%;padding:0;min-width:0}
+.cert h3{font-size:64px;margin:0;letter-spacing:6px;font-weight:600}
+.cert .ig{font-size:26px;color:var(--gold)}
+.cert .nm{font-size:56px;font-style:italic;border-bottom:2px solid var(--gold);display:inline-block;padding:0 40px;margin:10px 0}
+.cert p{font-size:24px;line-height:1.6;margin:0}
+.sig{display:flex;justify-content:space-around;gap:30px;flex-wrap:wrap}
+.sig div{min-width:240px;border-top:2px solid var(--ink);padding-top:6px;font-size:22px}
+.sig small{display:block;font-size:17px;color:#556}
+footer.jls{max-width:1000px;margin:8px auto 24px;padding:14px 18px 0;border-top:1px solid var(--line);display:flex;justify-content:center;align-items:center;gap:10px;font-size:.78rem;color:#8a92a6}
+footer.jls b{font-family:Georgia,serif;letter-spacing:1px;color:var(--ink);font-weight:700}
+footer.jls i{color:var(--gold);font-style:normal}
+@media(min-width:900px){.cert{zoom:.6}}
+@media print{
+ @page{size:A4 landscape;margin:0}
+ header,footer,#bd,#pv,.no{display:none!important}
+ .rp{border:0;padding:10mm}
+ body,main{background:#fff;padding:0;margin:0;max-width:none}
+ .cert{zoom:1;width:297mm;height:210mm;border-width:10px;padding:14mm 22mm}
+ #pr{display:block}
+}
+
+header{padding-bottom:14px}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#e0c37a;font-size:.85rem}
+.top #un{flex:1;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mb{background:none;border:0;color:#fff;font-size:1.7rem;line-height:1;cursor:pointer;padding:2px 8px}
+.top .b{padding:5px 10px;font-size:.8rem}
+#dr{position:fixed;top:0;bottom:0;left:0;width:270px;max-width:82vw;background:var(--ink);transform:translateX(-102%);transition:transform .2s;z-index:80;display:flex;flex-direction:column;padding:10px 0;overflow:auto}
+#dr.on{transform:none}
+#dr .dh{color:#e0c37a;font:600 1.1rem Georgia,serif;padding:10px 20px 14px;letter-spacing:1px}
+#dr button{text-align:left;padding:13px 20px;color:#c9d1e6;background:none;border:0;font:inherit;cursor:pointer}
+#dr button.on{background:var(--bg);color:var(--ink);font-weight:600}
+#ov{position:fixed;inset:0;background:#0007;z-index:70}#ov[hidden]{display:none}
+#lg,#pw{position:fixed;inset:0;z-index:100;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:16px}
+#pw{z-index:95;background:#000a}#lg[hidden],#pw[hidden]{display:none}
+#lg .card,#pw .card{width:100%;max-width:380px;margin:0}#lg input,#pw input{width:100%;margin-bottom:8px}#lg h2,#pw h2{text-align:center}
+#lg details{margin-bottom:8px;font-size:.85rem}
+#st{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 14px;border-radius:20px;font-size:.85rem;z-index:120;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
+#st.on{opacity:1}#st.er{background:var(--no)}
+a.b{background:var(--ink);color:#fff;text-decoration:none;padding:9px 14px;border-radius:8px;display:inline-block}a.b.g{background:var(--gold)}
+.kv{display:flex;gap:18px;flex-wrap:wrap;font-size:.95rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{padding:4px 10px;border:1px solid var(--line);border-radius:14px;font-size:.85rem;background:#fff}
+.chip.on{background:var(--gold);color:#fff;border-color:var(--gold)}.chip.pas{opacity:.5}
+body:not(.r-aluno) section.sa{display:none!important}
+body.r-aluno section.ss{display:none!important}
+body:not(.r-gestor) .gest{display:none!important}
+body:not(.r-admin) .adm{display:none!important}
+@media print{#dr,#ov,#lg,#pw,#st,.top{display:none!important}}
+</style></head><body>
+<header><div class="top"><button id="mb" onclick="drawer()" aria-label="Menu">&#9776;</button><span id="un"></span><button class="b g" onclick="sair()">Sair</button></div><h1>ESCOLA BÍBLICA DOMINICAL <small id="hig">(ASSEMBLEIA DE DEUS BELA ROSA)</small></h1></header>
+<main>
+<div class="row no" id="cfb" hidden><span class="muted" style="align-self:center">Classe:</span><select id="cf" onchange="setCf(this.value)" style="max-width:220px"><option value="">Todas as classes</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select></div>
+<div id="bd" class="bd" hidden></div>
+
+<section id="cad" class="ss on">
+ <div class="card gest"><h2>Igreja e pastor</h2>
+  <div class="row"><input id="igreja" placeholder="Nome da igreja"><input id="pastor" placeholder="Nome do pastor"><input id="pastort" placeholder="WhatsApp do pastor"></div>
+  <button class="b" onclick="saveBase()">Salvar</button></div>
+ <div class="two">
+  <div class="card gest"><h2>Professores</h2>
+   <div class="row"><input id="pn" placeholder="Nome do professor"><input id="pt" placeholder="WhatsApp (opcional)"><select id="pc"><option value="">Todas as classes</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select></div>
+   <button class="b" onclick="addP()">Adicionar professor</button><ul id="lp"></ul></div>
+  <div class="card"><h2>Alunos</h2>
+   <div class="row"><input id="an" placeholder="Nome do aluno"><input id="at" placeholder="WhatsApp com DDD"><select id="ac"><option value="">Classe...</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select><label class="lb">Data de nascimento<input id="ad" type="date"></label></div>
+   <button class="b" onclick="addA()">Adicionar aluno</button><ul id="la"></ul></div>
+ </div>
+</section>
+
+<section id="freq" class="ss">
+ <div class="card gest"><h2>Trimestre</h2>
+  <div class="row"><select id="tq" onchange="tqCh()" title="Trimestre"><option value="1">1º trimestre</option><option value="2">2º trimestre</option><option value="3">3º trimestre</option><option value="4">4º trimestre</option></select><input id="tm" type="month" title="Mês e ano de início do trimestre" onchange="setTrim()"></div>
+  <div class="row dias" id="dias"><span class="muted">Dias de aula:</span>
+   <label><input type="checkbox" value="0" checked>Dom</label><label><input type="checkbox" value="1">Seg</label><label><input type="checkbox" value="2">Ter</label><label><input type="checkbox" value="3">Qua</label><label><input type="checkbox" value="4">Qui</label><label><input type="checkbox" value="5">Sex</label><label><input type="checkbox" value="6">Sáb</label></div>
+  <div class="row"><button class="b" onclick="gerar()">Gerar aulas do trimestre</button>
+  <input id="nd" type="date" style="max-width:170px"><button class="b g" onclick="addD()">Adicionar aula</button></div>
+  <p class="muted">O trimestre vai de 3 meses a partir do mês escolhido. Toque numa célula para marcar: P (presente), F (faltou) ou vazio.</p></div>
+ <div class="card scroll" id="mat"></div>
+</section>
+
+<section id="rank" class="ss">
+ <div class="two"><div class="card"><h2>Maior frequência</h2><ul id="top"></ul></div>
+ <div class="card"><h2>Menor frequência</h2><ul id="bot"></ul></div></div>
+ <div class="card scroll"><h2>Todos os alunos</h2><div id="all"></div></div>
+</section>
+
+<section id="zap" class="ss">
+ <div class="card"><h2>Chamada para a aula</h2>
+  <div class="row"><input id="cdt" type="date" onchange="cham()"><input id="chh" placeholder="Horário (ex.: 19h)" oninput="cham()"><input id="cht" placeholder="Tema da aula (opcional)" oninput="cham()"></div>
+  <p class="muted">Use {nome}, {dia}, {data}, {hora}, {tema} e {igreja} na mensagem.</p>
+  <textarea id="cmm" oninput="cham()"></textarea></div>
+ <div class="card"><h2>Enviar a chamada</h2><ul id="cl"></ul></div>
+ <div class="card"><h2>Aniversariantes</h2>
+  <div class="row"><select id="bm" onchange="aniv()"><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option></select></div>
+  <p class="muted">Use {nome}, {idade} e {igreja} na mensagem.</p>
+  <textarea id="bmsg" style="min-height:70px" oninput="aniv()"></textarea>
+  <ul id="bl"></ul><p class="muted" id="bn"></p></div>
+ <div class="card"><h2>Avisar professores: aniversariantes de hoje</h2><ul id="pl"></ul></div>
+ <div class="card"><h2>Alunos que faltaram</h2>
+  <div class="row"><select id="zd" onchange="zap()"></select></div>
+  <p class="muted">Use {nome}, {data} e {igreja} na mensagem.</p>
+  <textarea id="zm" oninput="zap()"></textarea></div>
+ <div class="card"><ul id="zl"></ul></div>
+</section>
+
+<section id="rel" class="ss">
+ <div class="card no"><h2>Histórico completo</h2><p class="muted">O relatório abaixo reúne frequência, ranking e registro de todas as aulas. Toque em salvar e escolha "Salvar como PDF" na janela de impressão.</p>
+  <button class="b g" onclick="window.print()">Imprimir / salvar PDF</button></div>
+ <div class="card no"><h2>Enviar ao pastor e aos professores</h2><p class="muted">Salve o PDF primeiro. Ao tocar em Enviar, o WhatsApp abre com o resumo; anexe o PDF na conversa.</p><ul id="rs"></ul></div>
+ <div id="rp" class="rp"></div>
+</section>
+
+<section id="rev" class="ss">
+ <div class="card no gest"><h2>Adicionar revista</h2>
+  <div class="row"><input id="rt" placeholder="Título (ex.: Revista do Aluno - Adultos)"><input id="rq" placeholder="Trimestre (ex.: 4º trimestre de 2026)"></div>
+  <div class="row"><select id="rc"><option value="">Todas as classes</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select></div>
+  <div class="row"><input id="rlk" type="url" placeholder="Link do arquivo (Google Drive: Compartilhar, qualquer pessoa com o link)"></div>
+  <button class="b" onclick="addRev()">Adicionar revista</button>
+  <p class="muted">Suba o PDF no Google Drive, toque em Compartilhar, escolha "Qualquer pessoa com o link" e cole o link aqui.</p></div>
+ <div class="card"><h2>Revistas</h2><ul id="rv"></ul></div>
+</section>
+
+<section id="bib" class="ss">
+ <div class="card no gest"><h2>Adicionar à biblioteca</h2>
+  <div class="row"><input id="bbt" placeholder="Título (ex.: Bíblia de Estudo)"><input id="bba" placeholder="Autor (opcional)"></div>
+  <div class="row"><select id="bbc"><option>Bíblia</option><option>Livro</option><option>Estudo bíblico</option><option>Outro</option></select></div>
+  <div class="row"><input id="blk" type="url" placeholder="Link do arquivo (Google Drive: Compartilhar, qualquer pessoa com o link)"></div>
+  <button class="b" onclick="addLiv()">Adicionar à biblioteca</button>
+  <p class="muted">Cole o link do arquivo no Google Drive. Use apenas materiais que você tenha direito de guardar e distribuir.</p></div>
+ <div class="card"><h2>Biblioteca</h2>
+  <div class="row"><input id="bbq" type="search" placeholder="Buscar por título ou autor" oninput="bib()"><select id="bbk" onchange="bib()"><option value="">Todas as categorias</option><option>Bíblia</option><option>Livro</option><option>Estudo bíblico</option><option>Outro</option></select></div>
+  <ul id="bbl"></ul><p class="muted" id="bbu"></p></div>
+</section>
+
+<section id="cert" class="ss">
+ <div class="card no"><h2>Certificados</h2>
+  <div class="row"><select id="ca"></select><input id="cc" placeholder="Curso (ex.: Escola Bíblica Dominical)"></div>
+  <div class="row"><input id="cd" placeholder="Local e data (ex.: São Paulo, 20 de dezembro de 2026)"></div>
+  <textarea id="ct"></textarea>
+  <h2 style="margin-top:14px">Plano de fundo</h2>
+  <div class="row"><input type="file" id="cfile" accept="image/*" onchange="loadBg(this)"><button class="b" onclick="rmBg()">Remover imagem</button></div>
+  <p class="muted" id="bst"></p>
+  <div class="sl"><label>Opacidade<input type="range" id="bo" min="5" max="100" oninput="bgUpd(1)"></label>
+   <label>Tamanho (zoom)<input type="range" id="bz" min="100" max="250" oninput="bgUpd(1)"></label>
+   <label>Posição horizontal<input type="range" id="bx" min="0" max="100" oninput="bgUpd(1)"></label>
+   <label>Posição vertical<input type="range" id="by" min="0" max="100" oninput="bgUpd(1)"></label></div>
+  <div class="row" style="margin-top:10px"><button class="b" onclick="cert()">Gerar certificados</button><button class="b g" onclick="window.print()">Imprimir / salvar PDF</button></div>
+  <p class="muted">Os professores cadastrados assinam todos os certificados. Use {nome}, {curso} e {trimestre} no texto.</p></div>
+ <div id="pr"></div>
+</section>
+
+<section id="ainicio" class="sa"></section>
+<section id="afreq" class="sa"></section>
+<section id="arank" class="sa"></section>
+<section id="arev" class="sa"><div class="card"><h2>Revistas</h2><ul id="arv"></ul></div></section>
+<section id="abib" class="sa"><div class="card"><h2>Biblioteca</h2><div class="row"><input id="abq" type="search" placeholder="Buscar por título ou autor" oninput="bib()"></div><ul id="abl"></ul></div></section>
+<section id="sen"><div class="card"><h2>Trocar minha senha</h2>
+ <div class="row"><input id="sn1" type="password" placeholder="Nova senha (mínimo 6 caracteres)" autocomplete="new-password"><input id="sn2" type="password" placeholder="Repita a nova senha" autocomplete="new-password"></div>
+ <button class="b" onclick="trocarSenha('sn')">Salvar nova senha</button><p class="muted" id="snm" role="status"></p></div></section>
+<section id="acc" class="ss gest">
+ <div class="card"><h2>Acessos dos alunos</h2>
+  <p class="muted">Cada aluno entra com o seu WhatsApp (só números) e a senha inicial é a data de nascimento (DDMMAAAA). No primeiro acesso ele troca a senha. Alunos sem WhatsApp entram com o nome (ex.: maria.silva).</p>
+  <p class="muted" id="accn"></p><button class="b" onclick="criarAcessos()">Criar acessos dos alunos</button><p class="muted" id="accm" role="status"></p><ul id="acl"></ul></div>
+ <div class="card adm"><h2>Acesso de professores e equipe</h2>
+  <div class="row"><input id="qn" placeholder="Nome"><input id="qu" placeholder="Usuário (ex.: maria)" autocapitalize="none"></div>
+  <div class="row"><input id="qs" type="password" placeholder="Senha inicial (mínimo 6)" autocomplete="new-password"><select id="qp"><option value="professor">Professor</option><option value="pastor">Pastor</option><option value="admin">Administrador</option></select></div>
+  <button class="b" onclick="criarEquipe()">Criar acesso</button><p class="muted" id="qm" role="status"></p></div>
+</section>
+</main>
+<footer class="jls"><span>Desenvolvido por <b>JLS SOFT</b></span><i>•</i><span>Pensar. Criar. Evoluir.</span></footer>
+
+<div id="ov" hidden onclick="drawer(false)"></div><div id="dr" aria-label="Menu"></div>
+<div id="st" role="status"></div>
+<div id="lg"><div class="card"><h2>Escola Bíblica Dominical</h2>
+ <input id="lu" placeholder="Usuário (seu WhatsApp, só números)" autocapitalize="none" autocomplete="username">
+ <input id="ls" type="password" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')entrar()">
+ <button class="b" style="width:100%" onclick="entrar()">Entrar</button><p id="le" class="muted" role="alert"></p>
+ <p class="muted">Aluno: use o seu WhatsApp e, na primeira vez, a data de nascimento (DDMMAAAA) como senha.</p></div></div>
+<div id="pw" hidden><div class="card"><h2>Crie a sua senha</h2><p class="muted">Por segurança, troque a senha inicial antes de continuar.</p>
+ <input id="pw1" type="password" placeholder="Nova senha (mínimo 6 caracteres)" autocomplete="new-password">
+ <input id="pw2" type="password" placeholder="Repita a nova senha" autocomplete="new-password">
+ <button class="b" style="width:100%" onclick="trocarSenha('pw')">Salvar senha</button><p id="pwm" class="muted" role="alert"></p></div></div>
+
+<script type="module">
+const V='10.14.1',B='https://www.gstatic.com/firebasejs/'+V+'/';
+const cfg={apiKey:"AIzaSyBHx5YtMIttOKwtGzkh1RlzznT1z_Z6haU",authDomain:"ebd-belarosa.firebaseapp.com",projectId:"ebd-belarosa",storageBucket:"ebd-belarosa.firebasestorage.app",messagingSenderId:"1071836507199",appId:"1:1071836507199:web:cf10e3bc19b67d8cde1c8a"};
+try{
+ const[A,Au,Fs]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);
+ const app=A.initializeApp(cfg);
+ window.FB={cfg,app,auth:Au.getAuth(app),fs:Fs.getFirestore(app),initializeApp:A.initializeApp,getApps:A.getApps,getAuth:Au.getAuth,
+  signInWithEmailAndPassword:Au.signInWithEmailAndPassword,createUserWithEmailAndPassword:Au.createUserWithEmailAndPassword,signOut:Au.signOut,
+  onAuthStateChanged:Au.onAuthStateChanged,updatePassword:Au.updatePassword,doc:Fs.doc,collection:Fs.collection,getDoc:Fs.getDoc,setDoc:Fs.setDoc,
+  updateDoc:Fs.updateDoc,deleteDoc:Fs.deleteDoc,onSnapshot:Fs.onSnapshot,writeBatch:Fs.writeBatch};
+ dispatchEvent(new Event('fbready'));
+}catch(e){console.error(e);window.FBERR=e;dispatchEvent(new Event('fbfail'))}
+</script>
+<script>
+const $=s=>document.querySelector(s);
+let db={igreja:'Assembleia de Deus Bela Rosa',pastor:'',pastorT:'',trim:{nome:'',ini:'',fim:''},profs:[],alunos:[],datas:[],pres:{},zm:'',ct:''};
+const LOC=['cf','zm','ct','cm','ch','bmsg','bs','env'];
+try{Object.assign(db,JSON.parse(localStorage.getItem('eb_local')||'{}'))}catch(e){}
+const save=()=>{try{const l={};LOC.forEach(k=>l[k]=db[k]);localStorage.setItem('eb_local',JSON.stringify(l))}catch(e){}};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const fd=d=>d?d.split('-').reverse().join('/'):'';
+const MSG='Paz do Senhor, {nome}! Sentimos sua falta na Escola Bíblica Dominical do dia {data}. Esperamos você na próxima aula. Deus abençoe! {igreja}';
+const TXT='Certificamos que {nome} concluiu com dedicação o curso {curso}, no {trimestre}, participando das aulas e crescendo na Palavra de Deus.';
+
+function saveBase(){db.igreja=$('#igreja').value.trim();db.pastor=$('#pastor').value.trim();db.pastorT=$('#pastort').value;save();alert('Dados salvos.')}
+function addP(){const n=$('#pn').value.trim();if(!n)return;db.profs.push({id:uid(),n,t:$('#pt').value,cl:$('#pc').value});$('#pn').value=$('#pt').value=$('#pc').value='';save();render()}
+function addA(){const n=$('#an').value.trim();if(!n)return;db.alunos.push({id:uid(),n,t:$('#at').value,nasc:$('#ad').value,classe:$('#ac').value});$('#an').value=$('#at').value=$('#ad').value=$('#ac').value='';save();render()}
+function idade(d){if(!d)return'';const n=new Date(d+'T12:00'),h=new Date();let y=h.getFullYear()-n.getFullYear();if(h<new Date(h.getFullYear(),n.getMonth(),n.getDate()))y--;return y>=0?y+' anos':''}
+const CL=['Adultos','Jovens','Crianças'];
+const al=()=>db.alunos.filter(a=>!db.cf||a.classe===db.cf),pf=()=>db.profs.filter(p=>!db.cf||!p.cl||p.cl===db.cf);
+const clSel=(v,fn,id,ph)=>`<select onchange="${fn}('${id}',this.value)"><option value="">${ph}</option>${CL.map(c=>`<option${c===v?' selected':''}>${c}</option>`).join('')}</select>`;
+function setCf(v){db.cf=v;save();render()}
+function setCl(id,v){const a=db.alunos.find(x=>x.id===id);if(a){a.classe=v;save();render()}}
+function setPc(id,v){const a=db.profs.find(x=>x.id===id);if(a){a.cl=v;save();render()}}
+function setNasc(id,v){const a=db.alunos.find(x=>x.id===id);if(a){a.nasc=v;save();render()}}
+function del(k,id){if(!confirm('Remover?'))return;db[k]=db[k].filter(x=>x.id!==id);save();render()}
+
+function setTrim(){const q=$('#tq').value,m=$('#tm').value;if(!m)return false;const[y,mo]=m.split('-').map(Number),e=new Date(y,mo+2,0),z=n=>String(n).padStart(2,'0');
+ db.trim={q,mes:m,nome:q+'º trimestre de '+y,ini:m+'-01',fim:e.getFullYear()+'-'+z(e.getMonth()+1)+'-'+z(e.getDate())};save();return true}
+function tqCh(){const y=($('#tm').value||String(new Date().getFullYear())).slice(0,4);$('#tm').value=y+'-'+String((+$('#tq').value-1)*3+1).padStart(2,'0');setTrim()}
+function gerar(){if(!setTrim())return alert('Escolha o mês e o ano do trimestre.');const i=db.trim.ini,f=db.trim.fim;
+ const dias=[...document.querySelectorAll('#dias input:checked')].map(x=>+x.value);
+ if(!dias.length)return alert('Marque ao menos um dia da semana.');
+ for(let d=new Date(i+'T12:00');d<=new Date(f+'T12:00');d.setDate(d.getDate()+1))
+  if(dias.includes(d.getDay())){const s=d.toISOString().slice(0,10);if(!db.datas.includes(s))db.datas.push(s)}
+ db.datas.sort();save();render()}
+function addD(){const d=$('#nd').value;if(!d)return;if(!db.datas.includes(d))db.datas.push(d);db.datas.sort();save();render()}
+function delD(d){if(!confirm('Remover a aula de '+fd(d)+'?'))return;db.datas=db.datas.filter(x=>x!==d);
+ Object.keys(db.pres).forEach(k=>{if(k.startsWith(d+'|'))delete db.pres[k]});save();render()}
+function tog(d,id){const k=d+'|'+id,v=db.pres[k];if(!v)db.pres[k]='P';else if(v==='P')db.pres[k]='F';else delete db.pres[k];save();mat();}
+
+function stats(){return al().map(a=>{let p=0,f=0;db.datas.forEach(d=>{const v=db.pres[d+'|'+a.id];if(v==='P')p++;else if(v==='F')f++});
+ return{...a,p,f,pct:p+f?Math.round(p/(p+f)*100):0}}).sort((a,b)=>b.pct-a.pct||b.p-a.p)}
+
+function mat(){
+ if(!al().length||!db.datas.length){$('#mat').innerHTML='<p class="muted">Cadastre alunos e gere as aulas do trimestre para registrar a frequência.</p>';return}
+ $('#mat').innerHTML='<table><tr><th>Aluno</th>'+db.datas.map(d=>`<th>${fd(d).slice(0,5)}<br><small class="muted">${['dom','seg','ter','qua','qui','sex','sáb'][new Date(d+'T12:00').getDay()]}</small> <button class="x gest" title="Remover aula" onclick="delD('${d}')">×</button></th>`).join('')+'<th>%</th></tr>'+
+ stats().sort((a,b)=>a.n.localeCompare(b.n)).map(a=>`<tr><td>${esc(a.n)}</td>`+db.datas.map(d=>{const v=db.pres[d+'|'+a.id]||'';return`<td class="c ${v}" onclick="tog('${d}','${a.id}')">${v}</td>`}).join('')+`<td class="pct">${a.pct}%</td></tr>`).join('')+'</table>'}
+
+function rank(){const s=stats(),li=a=>`<li><span>${esc(a.n)}<br><small>${a.p} presenças, ${a.f} faltas</small></span><span class="pct">${a.pct}%</span></li>`;
+ $('#top').innerHTML=s.slice(0,5).map(li).join('')||'<li class="muted">Sem dados.</li>';
+ $('#bot').innerHTML=[...s].reverse().slice(0,5).map(li).join('')||'<li class="muted">Sem dados.</li>';
+ $('#all').innerHTML='<table><tr><th>Aluno</th><th>Classe</th><th>Presenças</th><th>Faltas</th><th>Frequência</th></tr>'+s.map(a=>`<tr><td>${esc(a.n)}</td><td>${esc(a.classe||'-')}</td><td>${a.p}</td><td>${a.f}</td><td class="pct">${a.pct}%</td></tr>`).join('')+'</table>'}
+
+function zap(){db.zm=$('#zm').value;save();const d=$('#zd').value;
+ const fal=al().filter(a=>db.pres[d+'|'+a.id]==='F');
+ $('#zl').innerHTML=fal.map(a=>{let t=a.t.replace(/\D/g,'');if(t&&t.length<=11)t='55'+t;
+  const m=db.zm.replace(/{nome}/g,a.n.split(' ')[0]).replace(/{data}/g,fd(d)).replace(/{igreja}/g,db.igreja);
+  return`<li><span>${esc(a.n)}<br><small>${esc(a.t)||'sem telefone'}</small></span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Enviar no WhatsApp</a>`:'<small>Cadastre o telefone</small>'}</li>`}).join('')
+  ||'<li class="muted">Nenhuma falta marcada nesta data.</li>'}
+
+function cert(prev){db.ct=$('#ct').value;save();const id=$('#ca').value,c=$('#cc').value||'Escola Bíblica Dominical';
+ let list=id==='*'?al():db.alunos.filter(a=>a.id===id);
+ if(!list.length){if(!prev)return alert('Cadastre ao menos um aluno.');list=[{n:'Nome do Aluno'}]}
+ $('#pr').innerHTML=list.map(a=>{
+  const t=db.ct.replace(/{nome}/g,`<b>${esc(a.n)}</b>`).replace(/{curso}/g,esc(c)).replace(/{trimestre}/g,esc(db.trim.nome||'trimestre'));
+  return`<div class="cert"><div class="bg"></div><div><div class="ig">${esc(db.igreja)}</div><h3>CERTIFICADO</h3></div>
+  <div><div class="nm">${esc(a.n)}</div><p>${t}</p></div>
+  <div><p>${esc($('#cd').value)}</p><br><div class="sig">${db.pastor?`<div>${esc(db.pastor)}<small>Pastor</small></div>`:''}${db.profs.filter(p=>!p.cl||p.cl===a.classe).map(p=>`<div>${esc(p.n)}<small>Professor(a)</small></div>`).join('')}</div></div></div>`}).join('')}
+
+db.env=db.env||{};db.livs=db.livs||[];db.revs=db.revs||[];db.cf=db.cf||'';db.ch=db.ch||{h:'',t:''};
+db.bs=Object.assign({o:30,z:100,x:50,y:50},db.bs);db.bg=db.bg||'';
+const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+const CMSG='Paz do Senhor, {nome}! Você está convidado(a) para a Escola Bíblica Dominical: {dia}, {data}{hora}. {tema} Contamos com sua presença! {igreja}';
+const tel=t=>{t=String(t||'').replace(/\D/g,'');return t&&t.length<=11?'55'+t:t};
+function cham(){db.cm=$('#cmm').value;db.ch={h:$('#chh').value,t:$('#cht').value};save();const d=$('#cdt').value;
+ if(!d){$('#cl').innerHTML='<li class="muted">Escolha a data da aula.</li>';return}
+ const dia=DIAS[new Date(d+'T12:00').getDay()];
+ $('#cl').innerHTML=al().map(a=>{const t=tel(a.t),k=d+'|'+a.id,ok=db.env[k];
+  const m=db.cm.replace(/{nome}/g,a.n.split(' ')[0]).replace(/{dia}/g,dia).replace(/{data}/g,fd(d)).replace(/{hora}/g,db.ch.h?' às '+db.ch.h:'').replace(/{tema}/g,db.ch.t?'Tema: '+db.ch.t+'.':'').replace(/{igreja}/g,db.igreja).replace(/ {2,}/g,' ');
+  return`<li><span>${esc(a.n)}<br><small>${ok?'✓ enviado':esc(a.t)||'sem telefone'}</small></span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}" onclick="env('${k}')">${ok?'Enviar de novo':'Chamar no WhatsApp'}</a>`:'<small>Cadastre o telefone</small>'}</li>`}).join('')||'<li class="muted">Cadastre os alunos.</li>'}
+const BMSG='Paz do Senhor, {nome}! Parabéns pelo seu aniversário ({idade} anos)! Que Deus abençoe ricamente a sua vida. Com carinho, {igreja}.';
+function aniv(){db.bmsg=$('#bmsg').value;save();const mes=+$('#bm').value,h=new Date(),ano=h.getFullYear();
+ const l=al().filter(a=>a.nasc&&+a.nasc.slice(5,7)===mes).sort((a,b)=>a.nasc.slice(8)-b.nasc.slice(8));
+ $('#bl').innerHTML=l.map(a=>{const dia=a.nasc.slice(8),id=ano-+a.nasc.slice(0,4),t=tel(a.t),hoje=+dia===h.getDate()&&mes===h.getMonth()+1;
+  const m=db.bmsg.replace(/{nome}/g,a.n.split(' ')[0]).replace(/{idade}/g,id).replace(/{igreja}/g,db.igreja);
+  return`<li><span>${esc(a.n)}<br><small>dia ${dia} · faz ${id} anos${hoje?' · <b>hoje</b>':''}</small></span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Parabenizar</a>`:'<small>Sem telefone</small>'}</li>`}).join('')||'<li class="muted">Nenhum aniversariante neste mês.</li>';
+ const sem=al().filter(a=>!a.nasc).length;$('#bn').textContent=sem?sem+' aluno(s) sem data de nascimento cadastrada.':''}
+const PMSG='Paz do Senhor, {prof}! Aniversariantes de hoje na Escola Bíblica: {lista}. Vamos parabenizá-los! {igreja}';
+
+function avisoProf(){const h=new Date(),m=h.getMonth()+1,d=h.getDate();
+ const l=db.alunos.filter(a=>a.nasc&&+a.nasc.slice(5,7)===m&&+a.nasc.slice(8)===d).map(a=>a.n+' ('+(h.getFullYear()-+a.nasc.slice(0,4))+' anos)').join(', ');
+ $('#bd').hidden=!l;$('#bd').innerHTML=l?'Aniversariantes de hoje: <b>'+esc(l)+'</b> <button class="b g" onclick="goZap()">Avisar professores</button>':'';
+ $('#pl').innerHTML=!l?'<li class="muted">Nenhum aniversariante hoje.</li>':db.profs.map(p=>{const t=tel(p.t),
+  msg=PMSG.replace(/{prof}/g,p.n.split(' ')[0]).replace(/{lista}/g,l).replace(/{igreja}/g,db.igreja);
+  return`<li><span>${esc(p.n)}</span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(msg)}">Avisar no WhatsApp</a>`:'<small>Cadastre o WhatsApp</small>'}</li>`}).join('')||'<li class="muted">Cadastre os professores.</li>'}
+function rel(){const s=stats(),n=db.datas.length;let P=0,F=0;s.forEach(a=>{P+=a.p;F+=a.f});
+ const med=P+F?Math.round(P/(P+F)*100):0,T=db.trim||{},li=a=>esc(a.n)+' ('+a.pct+'%)';
+ const top=s.slice(0,5).map(li).join(', ')||'-',bot=[...s].reverse().slice(0,5).map(li).join(', ')||'-',nome=[...s].sort((a,b)=>a.n.localeCompare(b.n));
+ $('#rp').innerHTML=`<h2>ESCOLA BÍBLICA DOMINICAL</h2><p class="sub">${esc(db.igreja)}</p>
+ <div class="kv"><span><b>Trimestre:</b> ${esc(T.nome||'-')}${T.ini?' ('+fd(T.ini)+' a '+fd(T.fim)+')':''}</span><span><b>Classe:</b> ${esc(db.cf||'Todas')}</span><span><b>Gerado em:</b> ${fd(new Date().toISOString().slice(0,10))}</span></div>
+ <div class="kv"><span><b>Pastor:</b> ${esc(db.pastor||'-')}</span><span><b>Professores:</b> ${esc(pf().map(p=>p.n).join(', ')||'-')}</span></div>
+ <h3>Resumo</h3><div class="kv"><span><b>Alunos:</b> ${s.length}</span><span><b>Aulas:</b> ${n}</span><span><b>Presenças:</b> ${P}</span><span><b>Faltas:</b> ${F}</span><span><b>Frequência média:</b> ${med}%</span></div>
+ <h3>Frequência por aluno</h3><table><tr><th>Aluno</th><th>Classe</th><th>Presenças</th><th>Faltas</th><th>Frequência</th></tr>${nome.map(a=>`<tr><td>${esc(a.n)}</td><td>${esc(a.classe||'-')}</td><td>${a.p}</td><td>${a.f}</td><td class="pct">${a.pct}%</td></tr>`).join('')}</table>
+ <h3>Maior frequência</h3><p>${top}</p><h3>Menor frequência</h3><p>${bot}</p>
+ <h3>Registro de presença por aula</h3><div class="scroll"><table><tr><th>Aluno</th>${db.datas.map(d=>`<th>${fd(d).slice(0,5)}</th>`).join('')}</tr>${nome.map(a=>`<tr><td>${esc(a.n)}</td>${db.datas.map(d=>{const v=db.pres[d+'|'+a.id]||'';return`<td class="${v}">${v||'-'}</td>`}).join('')}</tr>`).join('')}</table></div>`;
+ const res='Histórico da Escola Bíblica ('+(T.nome||'trimestre')+(db.cf?', classe '+db.cf:'')+'): '+s.length+' alunos, '+n+' aulas, frequência média '+med+'%. Maior frequência: '+top.replace(/&amp;/g,'&')+'. Menor frequência: '+bot.replace(/&amp;/g,'&')+'. O PDF completo segue em anexo.';
+ const dest=[...(db.pastor?[{n:db.pastor,t:db.pastorT,r:'Pastor'}]:[]),...pf().map(p=>({n:p.n,t:p.t,r:'Professor(a)'}))];
+ $('#rs').innerHTML=dest.map(d=>{const t=tel(d.t),m='Paz do Senhor, '+d.n.split(' ')[0]+'! '+res;
+  return`<li><span>${esc(d.n)}<br><small>${d.r}</small></span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Enviar no WhatsApp</a>`:'<small>Cadastre o WhatsApp</small>'}</li>`}).join('')||'<li class="muted">Cadastre o pastor e os professores.</li>'}
+function env(k){db.env[k]=1;save();setTimeout(cham,300)}
+function bgUpd(v){db.bs={o:$('#bo').value,z:$('#bz').value,x:$('#bx').value,y:$('#by').value};save();
+ const s=$('#pr').style;s.setProperty('--bi',db.bg?`url(${db.bg})`:'none');s.setProperty('--bo',db.bs.o/100);
+ s.setProperty('--bz',db.bs.z/100);s.setProperty('--bx',db.bs.x+'%');s.setProperty('--by',db.bs.y+'%');$('#bst').textContent=db.bg?'Imagem carregada.':'Nenhuma imagem escolhida.';if(v&&db.bg&&!$('#pr').children.length)cert(1)}
+function loadBg(inp){const f=inp.files[0];if(!f)return;const r=new FileReader(),er=()=>alert('Não consegui abrir essa imagem. Use um arquivo JPG ou PNG.');r.onerror=er;
+ r.onload=()=>{const im=new Image();im.onerror=er;im.onload=()=>{const k=Math.min(1,1200/im.width),c=document.createElement('canvas');
+  c.width=im.width*k;c.height=im.height*k;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+  x.drawImage(im,0,0,c.width,c.height);db.bg=c.toDataURL('image/jpeg',.7);if(db.bg.length>900000){db.bg='';return alert('A imagem ficou grande demais. Use uma imagem mais simples ou menor.')}bgUpd();cert(1);pubBg()};im.src=r.result};r.readAsDataURL(f)}
+function rmBg(){db.bg='';$('#cfile').value='';bgUpd();pubBg()}
+
+function renderStaff(){
+ $('#bo').value=db.bs.o;$('#bz').value=db.bs.z;$('#bx').value=db.bs.x;$('#by').value=db.bs.y;bgUpd();
+ $('#cf').value=db.cf;$('#igreja').value=db.igreja;$('#pastor').value=db.pastor;$('#pastort').value=db.pastorT||'';
+ $('#lp').innerHTML=db.profs.map(p=>`<li><span>${esc(p.n)}<br><small>${esc(p.t)}</small><br><label class="lb">Classe ${clSel(p.cl,'setPc',p.id,'Todas as classes')}</label></span><button class="x gest" title="Remover" onclick="del('profs','${p.id}')">×</button></li>`).join('');
+ $('#la').innerHTML=db.alunos.map(a=>`<li><span>${esc(a.n)}<br><small>${[esc(a.t),a.nasc&&idade(a.nasc),a.nasc&&'nasc. '+fd(a.nasc),esc(a.classe)].filter(Boolean).join(' · ')||'sem dados'}</small><details><summary class="muted" style="cursor:pointer;font-size:.85rem">Editar classe e nascimento</summary><label class="lb">Classe ${clSel(a.classe,'setCl',a.id,'Sem classe')}</label><label class="lb">Nascimento<input type="date" value="${a.nasc||''}" onchange="setNasc('${a.id}',this.value)"></label></details></span><button class="x gest" title="Remover" onclick="del('alunos','${a.id}')">×</button></li>`).join('');
+ $('#tq').value=db.trim.q||1;$('#tm').value=db.trim.mes||(db.trim.ini||'').slice(0,7);
+ mat();rank();
+ const sel=$('#zd').value;$('#zd').innerHTML=db.datas.map(d=>`<option value="${d}">${fd(d)}</option>`).join('');if(sel&&db.datas.includes(sel))$('#zd').value=sel;
+ $('#zm').value=db.zm||MSG;zap();
+ const hoje=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+ if(!$('#cdt').value)$('#cdt').value=db.datas.find(x=>x>=hoje)||hoje;
+ if(!$('#bm').dataset.i){$('#bm').value=new Date().getMonth()+1;$('#bm').dataset.i=1}
+ $('#bmsg').value=db.bmsg||BMSG;aniv();avisoProf();rel();revs();bib();
+ $('#cmm').value=db.cm||CMSG;$('#chh').value=db.ch.h;$('#cht').value=db.ch.t;cham();
+ const ca=$('#ca').value;$('#ca').innerHTML='<option value="*">Todos os alunos (da classe selecionada)</option>'+al().map(a=>`<option value="${a.id}">${esc(a.n)}</option>`).join('');if(ca)$('#ca').value=ca;
+ if(!$('#ct').value)$('#ct').value=db.ct||TXT;
+}
+
+// ===================== Firebase: login, perfis, dados =====================
+const FILT=['freq','rank','zap','cert','rel','rev','bib'];
+let ME=null,UNS=[],ready=false,stT=null,rT=null,rPend=false,rkT=null,rkLast='[]',anLast='',RK=null,AN=null,AF={};
+const ref=(...p)=>FB.doc(FB.fs,...p),col=(...p)=>FB.collection(FB.fs,...p);
+const hojeStr=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const slug=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'.').replace(/^\.+|\.+$/g,'');
+const canon=o=>JSON.stringify(o,(k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.keys(v).sort().reduce((r,x)=>(r[x]=v[x],r),{}):v);
+function st(m,er){const e=$('#st');e.textContent=m;e.className='on'+(er?' er':'');clearTimeout(stT);stT=setTimeout(()=>e.className='',3000)}
+function errFB(e){console.error(e);const c=(e&&e.code)||'';st(c==='permission-denied'?'Sem permissão para essa ação.':(c==='unavailable'?'Sem conexão com o servidor.':'Erro: '+(c||(e&&e.message)||e)),1)}
+const W=async f=>{try{return await f()}catch(e){errFB(e);return null}};
+function sub(r,fn){UNS.push(FB.onSnapshot(r,fn,errFB))}
+function subC(c,fn){sub(col(c),s=>fn(s.docs.map(d=>({id:d.id,...d.data()}))))}
+function sched(){clearTimeout(rT);rT=setTimeout(()=>{const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)&&!a.closest('#lg,#pw')){rPend=true;return}render()},200)}
+document.addEventListener('focusout',()=>{if(rPend){rPend=false;setTimeout(()=>{const a=document.activeElement;if(!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)))render()},250)}});
+
+function normLogin(v){let x=String(v||'').trim().toLowerCase().replace(/\s+/g,'');if(!x)return'';if(x.includes('@'))return x;if(/^[\d()+-]+$/.test(x))x=x.replace(/\D/g,'');return x+'@ebd.local'}
+const msgAuth=e=>{const c=(e&&e.code)||'';if(/invalid-credential|wrong-password|user-not-found|invalid-email/.test(c))return'Usuário ou senha incorretos.';if(c.includes('too-many'))return'Muitas tentativas. Aguarde alguns minutos.';if(c.includes('network'))return'Sem conexão com a internet.';return'Não foi possível entrar: '+(c||(e&&e.message))};
+
+function mostrarLogin(msg){ready=false;ME=null;UNS.forEach(u=>u());UNS=[];document.body.className='';$('#lg').hidden=false;$('#le').textContent=msg||''}
+async function entrar(){const e=$('#le');e.textContent='';const u=$('#lu').value,s=$('#ls').value;if(!u.trim()||!s){e.textContent='Informe usuário e senha.';return}
+ try{await FB.signInWithEmailAndPassword(FB.auth,normLogin(u),s);$('#ls').value=''}catch(x){e.textContent=msgAuth(x)}}
+function sair(){FB.signOut(FB.auth).then(()=>location.reload())}
+
+async function abrir(u){
+ if(ME&&ME.uid===u.uid)return;
+ try{const s=await FB.getDoc(ref('perfis',u.uid));
+  if(!s.exists()){await FB.signOut(FB.auth);mostrarLogin('Seu acesso ainda não foi liberado. Fale com o administrador.');return}
+  ME={uid:u.uid,...s.data()}}
+ catch(e){mostrarLogin('Não consegui verificar o seu acesso: '+((e&&e.code)||(e&&e.message)));return}
+ const p=ME.papel;document.body.className=p==='aluno'?'r-aluno':p==='professor'?'r-prof':'r-gestor'+(p==='admin'?' r-admin':'');
+ $('#un').textContent=(ME.nome||'')+' ('+p+')';montaMenu();
+ UNS.forEach(f=>f());UNS=[];$('#lg').hidden=true;ready=true;ouvir();go(p==='aluno'?'ainicio':'cad');
+ if(ME.trocarSenha)$('#pw').hidden=false}
+
+function ouvir(){
+ sub(ref('publico','escola'),s=>{const d=s.data()||{};if(d.igreja)db.igreja=d.igreja;db.pastor=d.pastor||'';db.trim=d.trim||{nome:'',ini:'',fim:''};db.datas=d.datas||[];sched();if(ME&&ME.papel==='aluno')lerFreq()});
+ subC('materiais',a=>{db.revs=a.filter(x=>x.tipo==='revista');db.livs=a.filter(x=>x.tipo==='livro');sched()});
+ if(ME.papel==='aluno'){
+  sub(ref('ranking','atual'),s=>{RK=s.data()||{itens:[]};sched()});
+  sub(ref('publico','aniversariantes'),s=>{AN=s.data()||{};sched()});return}
+ sub(ref('config','equipe'),s=>{const d=s.data()||{};db.pastorT=d.pastorT||'';db.bg=d.bg||'';sched()});
+ subC('alunos',a=>{db.alunos=a.map(x=>({id:x.id,n:x.n||'',t:x.t||'',nasc:x.nasc||'',classe:x.classe||'',uid:x.uid||'',login:x.login||'',ant:x.ant||[]}));sched()});
+ subC('professores',a=>{db.profs=a.map(x=>({id:x.id,n:x.n||'',t:x.t||'',cl:x.cl||''}));sched()});
+ subC('frequencia',a=>{const p={};a.forEach(x=>{p[x.data+'|'+x.alunoId]=x.v});db.pres=p;sched()});
+ sub(ref('ranking','atual'),s=>{rkLast=canon((s.data()||{}).itens||[])});
+ sub(ref('publico','aniversariantes'),s=>{const d=s.data();anLast=d?d.mes+canon(d.itens||[]):''})}
+
+// ---------- menu lateral ----------
+function go(t){document.querySelectorAll('section').forEach(x=>x.classList.remove('on'));$('#'+t).classList.add('on');
+ document.querySelectorAll('#dr button[data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ $('#cfb').hidden=!FILT.includes(t);drawer(false);
+ if(ME&&ME.papel==='aluno'&&(t==='afreq'||t==='ainicio'))lerFreq();
+ render();window.scrollTo(0,0)}
+function drawer(v){const o=v===undefined?!$('#dr').classList.contains('on'):v;$('#dr').classList.toggle('on',o);$('#ov').hidden=!o}
+function montaMenu(){const p=ME.papel,it=p==='aluno'?[['ainicio','Início'],['afreq','Minha frequência'],['arank','Ranking'],['arev','Revistas'],['abib','Biblioteca'],['sen','Trocar senha']]
+ :[['cad','Cadastros'],['freq','Frequência'],['rank','Ranking'],['zap','WhatsApp'],['cert','Certificados'],['rel','Relatório'],['rev','Revistas'],['bib','Biblioteca'],...(p==='professor'?[]:[['acc','Acessos']]),['sen','Trocar senha']];
+ $('#dr').innerHTML='<div class="dh">Menu</div>'+it.map(([t,n])=>`<button data-t="${t}" onclick="go('${t}')">${n}</button>`).join('')+'<button onclick="sair()">Sair</button>'}
+function goZap(){go('zap')}
+
+// ---------- senha ----------
+async function trocarSenha(pre){const a=$('#'+pre+'1').value,b=$('#'+pre+'2').value,m=$('#'+pre+'m');m.textContent='';
+ if(a.length<6){m.textContent='A senha precisa ter ao menos 6 caracteres.';return}
+ if(a!==b){m.textContent='As duas senhas não são iguais.';return}
+ try{await FB.updatePassword(FB.auth.currentUser,a);if(ME.trocarSenha){await FB.updateDoc(ref('perfis',ME.uid),{trocarSenha:false});ME.trocarSenha=false}
+  $('#pw').hidden=true;$('#'+pre+'1').value=$('#'+pre+'2').value='';m.textContent='';st('Senha alterada.')}
+ catch(e){m.textContent=e.code==='auth/requires-recent-login'?'Por segurança, saia e entre de novo antes de trocar a senha.':e.code==='auth/weak-password'?'Senha fraca. Use ao menos 6 caracteres.':'Não foi possível trocar: '+(e.code||e.message)}}
+
+// ---------- gravações ----------
+function pubEscola(){return W(()=>FB.setDoc(ref('publico','escola'),{igreja:db.igreja,pastor:db.pastor||'',trim:db.trim,datas:db.datas},{merge:true}))}
+function pubBg(){return W(()=>FB.setDoc(ref('config','equipe'),{bg:db.bg},{merge:true}))}
+async function saveBase(){db.igreja=$('#igreja').value.trim()||db.igreja;db.pastor=$('#pastor').value.trim();db.pastorT=$('#pastort').value;
+ await pubEscola();await W(()=>FB.setDoc(ref('config','equipe'),{pastorT:db.pastorT},{merge:true}));st('Dados salvos.');render()}
+function addP(){const n=$('#pn').value.trim();if(!n)return;const id=uid();W(()=>FB.setDoc(ref('professores',id),{n,t:$('#pt').value,cl:$('#pc').value}));$('#pn').value=$('#pt').value=$('#pc').value=''}
+function addA(){const n=$('#an').value.trim();if(!n)return;const id=uid();W(()=>FB.setDoc(ref('alunos',id),{n,t:$('#at').value,nasc:$('#ad').value,classe:$('#ac').value}));$('#an').value=$('#at').value=$('#ad').value=$('#ac').value=''}
+function setCl(id,v){W(()=>FB.updateDoc(ref('alunos',id),{classe:v}))}
+function setPc(id,v){W(()=>FB.updateDoc(ref('professores',id),{cl:v}))}
+function setNasc(id,v){W(()=>FB.updateDoc(ref('alunos',id),{nasc:v}))}
+async function del(k,id){if(!confirm('Remover?'))return;
+ if(k==='profs'){W(()=>FB.deleteDoc(ref('professores',id)));return}
+ const ks=Object.keys(db.pres).filter(x=>x.endsWith('|'+id)),a=db.alunos.find(x=>x.id===id);
+ const ok=await W(async()=>{const b=FB.writeBatch(FB.fs);ks.forEach(x=>b.delete(ref('frequencia',x.replace('|','_'))));b.delete(ref('alunos',id));await b.commit();return 1});
+ if(ok&&a&&a.uid)FB.deleteDoc(ref('perfis',a.uid)).catch(()=>{})}
+function setTrim(){const q=$('#tq').value,m=$('#tm').value;if(!m)return false;const[y,mo]=m.split('-').map(Number),e=new Date(y,mo+2,0),z=n=>String(n).padStart(2,'0');
+ db.trim={q,mes:m,nome:q+'º trimestre de '+y,ini:m+'-01',fim:e.getFullYear()+'-'+z(e.getMonth()+1)+'-'+z(e.getDate())};pubEscola();return true}
+function gerar(){if(!setTrim())return alert('Escolha o mês e o ano do trimestre.');const i=db.trim.ini,f=db.trim.fim;
+ const dias=[...document.querySelectorAll('#dias input:checked')].map(x=>+x.value);
+ if(!dias.length)return alert('Marque ao menos um dia da semana.');
+ for(let d=new Date(i+'T12:00');d<=new Date(f+'T12:00');d.setDate(d.getDate()+1))
+  if(dias.includes(d.getDay())){const s=d.toISOString().slice(0,10);if(!db.datas.includes(s))db.datas.push(s)}
+ db.datas.sort();pubEscola();render()}
+function addD(){const d=$('#nd').value;if(!d)return;if(!db.datas.includes(d))db.datas.push(d);db.datas.sort();pubEscola();render()}
+async function delD(d){if(!confirm('Remover a aula de '+fd(d)+'?'))return;db.datas=db.datas.filter(x=>x!==d);
+ const ks=Object.keys(db.pres).filter(k=>k.startsWith(d+'|'));ks.forEach(k=>delete db.pres[k]);render();
+ await W(async()=>{const b=FB.writeBatch(FB.fs);ks.forEach(k=>b.delete(ref('frequencia',k.replace('|','_'))));await b.commit()});pubEscola()}
+function tog(d,id){const k=d+'|'+id,v=db.pres[k];let n='';if(!v)n='P';else if(v==='P')n='F';
+ if(n)db.pres[k]=n;else delete db.pres[k];mat();
+ W(()=>n?FB.setDoc(ref('frequencia',d+'_'+id),{data:d,alunoId:id,v:n}):FB.deleteDoc(ref('frequencia',d+'_'+id)))}
+
+// ---------- ranking e aniversariantes públicos (alunos só leem estes resumos) ----------
+const nomeCurto=n=>{const p=String(n).trim().split(/\s+/);return p.length>1?p[0]+' '+p[p.length-1][0]+'.':p[0]};
+function statsAll(){return db.alunos.map(a=>{let p=0,f=0;db.datas.forEach(d=>{const v=db.pres[d+'|'+a.id];if(v==='P')p++;else if(v==='F')f++});
+ return{id:a.id,n:nomeCurto(a.n),classe:a.classe||'',p,f,pct:p+f?Math.round(p/(p+f)*100):0}}).sort((a,b)=>b.pct-a.pct||b.p-a.p)}
+function pubRank(){clearTimeout(rkT);rkT=setTimeout(()=>{if(!ME||ME.papel==='aluno'||!ready)return;const itens=statsAll(),s=canon(itens);if(s===rkLast)return;rkLast=s;W(()=>FB.setDoc(ref('ranking','atual'),{itens,atualizado:Date.now()}))},4000)}
+function pubAniv(){if(!ME||ME.papel==='aluno'||!ready)return;const m=new Date().getMonth()+1;
+ const itens=db.alunos.filter(a=>a.nasc&&+a.nasc.slice(5,7)===m).sort((a,b)=>a.nasc.slice(8)-b.nasc.slice(8)).map(a=>nomeCurto(a.n));
+ const s=m+canon(itens);if(s===anLast)return;anLast=s;W(()=>FB.setDoc(ref('publico','aniversariantes'),{mes:m,itens}))}
+
+// ---------- revistas e biblioteca por link (Google Drive) ----------
+const dlink=l=>{l=String(l);const m=l.match(/drive\.google\.com\/file\/d\/([\w-]+)/)||(/drive\.google\.com/.test(l)&&l.match(/[?&]id=([\w-]+)/));return m?'https://drive.google.com/uc?export=download&id='+m[1]:l};
+const okLink=l=>/^https?:\/\/\S+$/i.test(l);
+const matLi=(r,sub,del)=>`<li><span>${esc(r.t)}<br><small>${sub}</small></span><span style="display:flex;gap:6px;align-items:center"><a class="b" href="${esc(dlink(r.link))}" target="_blank" rel="noopener">Baixar</a><a class="b g" href="${esc(r.link)}" target="_blank" rel="noopener">Abrir</a>${del?`<button class="x gest" title="Remover" onclick="delMat('${r.id}')">×</button>`:''}</span></li>`;
+function addRev(){const l=$('#rlk').value.trim();if(!okLink(l))return alert('Cole o link completo do arquivo (começa com https://).');
+ const id=uid(),t=$('#rt').value.trim()||'Revista',q=$('#rq').value.trim()||db.trim.nome||'',c=$('#rc').value;
+ W(()=>FB.setDoc(ref('materiais',id),{tipo:'revista',t,q,c,link:l,dt:hojeStr()}));$('#rt').value=$('#rlk').value=''}
+function addLiv(){const l=$('#blk').value.trim();if(!okLink(l))return alert('Cole o link completo do arquivo (começa com https://).');
+ const id=uid(),t=$('#bbt').value.trim()||'Sem título',a=$('#bba').value.trim(),k=$('#bbc').value;
+ W(()=>FB.setDoc(ref('materiais',id),{tipo:'livro',t,a,k,link:l,dt:hojeStr()}));$('#bbt').value=$('#bba').value=$('#blk').value=''}
+function delMat(id){if(!confirm('Remover este item?'))return;W(()=>FB.deleteDoc(ref('materiais',id)))}
+function revs(){const alu=ME&&ME.papel==='aluno',cl=alu?ME.classe:db.cf;
+ const l=db.revs.filter(r=>!cl||!r.c||r.c===cl).sort((a,b)=>(b.dt||'').localeCompare(a.dt||''));
+ const h=l.map(r=>matLi(r,[esc(r.q),esc(r.c||'Todas as classes')].filter(Boolean).join(' · '),!alu)).join('')||'<li class="muted">Nenhuma revista adicionada.</li>';
+ const e=$(alu?'#arv':'#rv');if(e)e.innerHTML=h}
+function bib(){const alu=ME&&ME.papel==='aluno',q=($(alu?'#abq':'#bbq').value||'').trim().toLowerCase(),k=alu?'':$('#bbk').value;
+ const l=db.livs.filter(x=>(!k||x.k===k)&&(!q||((x.t||'')+' '+(x.a||'')).toLowerCase().includes(q))).sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+ const h=l.map(x=>matLi(x,[esc(x.a),esc(x.k)].filter(Boolean).join(' · '),!alu)).join('')||'<li class="muted">'+(db.livs.length?'Nada encontrado.':'Nenhum item na biblioteca.')+'</li>';
+ const e=$(alu?'#abl':'#bbl');if(e)e.innerHTML=h;if(!alu)$('#bbu').textContent=db.livs.length?db.livs.length+' item(ns) na biblioteca.':''}
+
+// ---------- acessos (criar logins) ----------
+const senhaIni=a=>a.nasc?a.nasc.split('-').reverse().join(''):'';
+function loginDe(a,usados){const dig=(a.t||'').replace(/\D/g,'');let b=dig||slug(a.n)||'aluno',c=b,i=1;
+ if(usados.has(c))c=b+'.'+(slug(String(a.n).split(' ')[0])||'a');while(usados.has(c)){i++;c=b+'.'+i}return c}
+async function criarConta(email,senha){let sec=FB.getApps().find(a=>a.name==='sec');if(!sec)sec=FB.initializeApp(FB.cfg,'sec');
+ const a2=FB.getAuth(sec),c=await FB.createUserWithEmailAndPassword(a2,email,senha);await FB.signOut(a2);return c.user.uid}
+async function criarAcessos(){const pend=db.alunos.filter(a=>!a.uid),ok=pend.filter(a=>senhaIni(a)),sem=pend.length-ok.length;
+ if(!pend.length)return alert('Todos os alunos já têm acesso.');
+ if(!ok.length)return alert('Os alunos sem acesso não têm data de nascimento cadastrada.');
+ if(!confirm('Criar acesso para '+ok.length+' aluno(s)?'+(sem?'\n'+sem+' ficarão de fora por falta da data de nascimento.':'')))return;
+ let feitos=0;const falhas=[],usados=new Set(db.alunos.flatMap(a=>[a.login,...(a.ant||[])]).filter(Boolean));
+ for(const a of ok){const login=loginDe(a,usados);usados.add(login);$('#accm').textContent='Criando '+(feitos+falhas.length+1)+' de '+ok.length+'...';
+  try{const u=await criarConta(login+'@ebd.local',senhaIni(a));
+   await FB.setDoc(ref('perfis',u),{nome:a.n,papel:'aluno',alunoId:a.id,classe:a.classe||'',usuario:login,trocarSenha:true});
+   await FB.updateDoc(ref('alunos',a.id),{uid:u,login});feitos++}
+  catch(e){falhas.push(a.n+': '+(e.code==='auth/email-already-in-use'?'o usuário '+login+' já existe':(e.code||e.message)))}}
+ $('#accm').textContent=feitos+' acesso(s) criado(s).'+(falhas.length?' Falhas: '+falhas.join('; '):'')}
+async function refazer(id){const a=db.alunos.find(x=>x.id===id);if(!a||!a.uid)return;
+ if(!confirm('Refazer o acesso de '+a.n+'? O login atual deixa de funcionar e um novo será criado em "Criar acessos dos alunos".'))return;
+ const ok=await W(async()=>{const b=FB.writeBatch(FB.fs);b.delete(ref('perfis',a.uid));await b.commit();await FB.updateDoc(ref('alunos',id),{uid:'',login:'',ant:[...(a.ant||[]),a.login].filter(Boolean)});return 1});
+ if(ok)st('Acesso removido. Toque em "Criar acessos dos alunos" para gerar o novo.')}
+async function criarEquipe(){const m=$('#qm');m.textContent='';const nome=$('#qn').value.trim(),email=normLogin($('#qu').value),s=$('#qs').value,p=$('#qp').value;
+ if(!nome||!email||s.length<6){m.textContent='Preencha nome, usuário e senha (mínimo 6 caracteres).';return}
+ try{const u=await criarConta(email,s),login=email.replace('@ebd.local','');
+  await FB.setDoc(ref('perfis',u),{nome,papel:p,usuario:login,trocarSenha:true});m.textContent='Acesso criado. Usuário: '+login+'.';$('#qn').value=$('#qu').value=$('#qs').value=''}
+ catch(e){m.textContent=e.code==='auth/email-already-in-use'?'Esse usuário já existe.':'Não foi possível criar: '+(e.code||e.message)}}
+function renderAcc(){const el=$('#acl');if(!el)return;
+ el.innerHTML=db.alunos.slice().sort((a,b)=>a.n.localeCompare(b.n)).map(a=>{const sp=senhaIni(a),t=tel(a.t),
+  stt=a.uid?'com acesso':(sp?'sem acesso':'falta a data de nascimento'),
+  m='Paz do Senhor, '+a.n.split(' ')[0]+'! Seu acesso à Escola Bíblica Dominical: endereço '+location.href.split('#')[0].split('?')[0]+' , usuário '+a.login+' , senha inicial '+sp+' (sua data de nascimento, só números). No primeiro acesso você troca a senha.';
+  return`<li><span>${esc(a.n)}<br><small>${a.login?'usuário '+esc(a.login)+' · ':''}${stt}</small></span><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${a.uid&&t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Enviar acesso</a>`:''}${a.uid?`<button class="b g" onclick="refazer('${a.id}')">Refazer acesso</button>`:''}</span></li>`}).join('')||'<li class="muted">Cadastre os alunos primeiro.</li>';
+ const n=db.alunos.filter(a=>!a.uid&&senhaIni(a)).length;$('#accn').textContent=n?n+' aluno(s) sem acesso, prontos para criar.':'Nenhum aluno pendente.'}
+
+// ---------- tela do aluno ----------
+async function lerFreq(){if(!ME||ME.papel!=='aluno')return;const ds=db.datas;
+ try{const rs=await Promise.all(ds.map(d=>FB.getDoc(ref('frequencia',d+'_'+ME.alunoId))));const n={};rs.forEach((s,i)=>{if(s.exists())n[ds[i]]=s.data().v});
+  if(canon(n)!==canon(AF)){AF=n;renderAluno()}}catch(e){console.error(e)}}
+function renderAluno(){const hoje=hojeStr(),prox=db.datas.find(d=>d>=hoje),nome=String(ME.nome||'').split(' ')[0],dd=d=>DIAS[new Date(d+'T12:00').getDay()];
+ const em=d=>{const n=Math.round((new Date(d+'T12:00')-new Date(hoje+'T12:00'))/864e5);return n===0?'hoje':n===1?'amanhã':'em '+n+' dias'};
+ const chips=db.datas.map(d=>`<span class="chip${d===prox?' on':''}${d<hoje?' pas':''}">${fd(d).slice(0,5)}</span>`).join('')||'<span class="muted">O calendário ainda não foi publicado.</span>';
+ const an=(AN&&AN.mes===new Date().getMonth()+1&&AN.itens)||[];
+ $('#ainicio').innerHTML=`<div class="card"><h2>Paz do Senhor, ${esc(nome)}!</h2><p>${prox?'Próxima aula: <b>'+dd(prox)+', '+fd(prox)+'</b> ('+em(prox)+')':'Nenhuma aula futura no calendário.'}</p></div>
+ <div class="card"><h2>Calendário${db.trim&&db.trim.nome?' - '+esc(db.trim.nome):''}</h2><div class="chips">${chips}</div></div>
+ <div class="card"><h2>Aniversariantes do mês</h2>${an.length?'<ul>'+an.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<p class="muted">Nenhum aniversariante neste mês.</p>'}</div>`;
+ let p=0,f=0;db.datas.forEach(d=>{if(AF[d]==='P')p++;else if(AF[d]==='F')f++});const pct=p+f?Math.round(p/(p+f)*100):0;
+ $('#afreq').innerHTML=`<div class="card"><h2>Minha frequência</h2><div class="kv"><span><b>Presenças:</b> ${p}</span><span><b>Faltas:</b> ${f}</span><span><b>Frequência:</b> <span class="pct">${pct}%</span></span></div></div>
+ <div class="card scroll"><table><tr><th>Aula</th><th>Dia</th><th>Situação</th></tr>${db.datas.map(d=>{const v=AF[d]||'';return`<tr><td>${fd(d)}</td><td>${dd(d)}</td><td class="${v}">${v==='P'?'Presente':v==='F'?'Faltou':d>hoje?'—':'sem registro'}</td></tr>`}).join('')}</table></div>`;
+ const R=(RK&&RK.itens)||[];
+ $('#arank').innerHTML='<div class="card"><h2>Ranking de frequência</h2><ul>'+(R.map((a,i)=>`<li${a.id===ME.alunoId?' style="background:#fff6dd;font-weight:600"':''}><span>${i+1}º ${esc(a.n)}<br><small>${esc(a.classe||'')}</small></span><span class="pct">${a.pct}%</span></li>`).join('')||'<li class="muted">O ranking ainda não foi publicado.</li>')+'</ul></div>';
+ revs();bib()}
+
+function render(){if(!ME)return;$('#hig').textContent='('+String(db.igreja||'').toUpperCase()+')';
+ if(ME.papel==='aluno')renderAluno();else{renderStaff();renderAcc();pubRank();pubAniv()}}
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+function iniciar(){FB.onAuthStateChanged(FB.auth,async u=>{if(!u){mostrarLogin();return}await abrir(u)});
+ setInterval(()=>{if(ME&&ME.papel==='aluno'&&!document.hidden)lerFreq()},60000)}
+addEventListener('fbfail',()=>{$('#lg').hidden=false;$('#le').textContent='Não consegui carregar o Firebase. Confira a internet e tente de novo.'});
+if(window.FB)iniciar();else if(window.FBERR)dispatchEvent(new Event('fbfail'));else addEventListener('fbready',iniciar);
+
+</script>
+</body></html>
