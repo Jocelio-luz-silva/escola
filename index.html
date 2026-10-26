@@ -186,14 +186,14 @@ li .nm{display:flex;align-items:center}
 
 <section id="cad" class="ss on">
  <div class="card gest"><h2>Igreja e pastor</h2>
-  <div class="row"><input id="igreja" placeholder="Nome da igreja"><input id="pastor" placeholder="Nome do pastor"><input id="pastort" placeholder="WhatsApp do pastor"></div>
+  <div class="row"><input id="igreja" placeholder="Nome da igreja"><input id="pastor" placeholder="Nome do pastor"><input id="pastort" placeholder="WhatsApp do pastor, com DDD" inputmode="tel"></div>
   <button class="b" onclick="saveBase()">Salvar</button></div>
  <div class="two">
   <div class="card gest"><h2>Professores</h2>
-   <div class="row"><input id="pn" placeholder="Nome do professor"><input id="pt" placeholder="WhatsApp (opcional)"><select id="pc"><option value="">Todas as classes</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select></div>
+   <div class="row"><input id="pn" placeholder="Nome do professor"><input id="pt" placeholder="WhatsApp com DDD (opcional)" inputmode="tel"><select id="pc"><option value="">Todas as classes</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select></div>
    <button class="b" onclick="addP()">Adicionar professor</button><ul id="lp"></ul></div>
   <div class="card"><h2>Alunos</h2>
-   <div class="row"><input id="an" placeholder="Nome do aluno"><input id="at" placeholder="WhatsApp com DDD"><select id="ac"><option value="">Classe...</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select><label class="lb">Data de nascimento<input id="ad" type="date"></label></div>
+   <div class="row"><input id="an" placeholder="Nome do aluno"><input id="at" placeholder="WhatsApp com DDD (sem +55)" inputmode="tel"><select id="ac"><option value="">Classe...</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select><label class="lb">Data de nascimento<input id="ad" type="date"></label></div>
    <button class="b" onclick="addA()">Adicionar aluno</button><ul id="la"></ul></div>
  </div>
 </section>
@@ -399,7 +399,7 @@ db.env=db.env||{};db.livs=db.livs||[];db.revs=db.revs||[];db.cf=db.cf||'';db.ch=
 db.bs=Object.assign({o:30,z:100,x:50,y:50},db.bs);db.bg=db.bg||'';
 const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
 const CMSG='Paz do Senhor, {nome}! Você está convidado(a) para a Escola Bíblica Dominical: {dia}, {data}{hora}. {tema} Contamos com sua presença! {igreja}';
-const tel=t=>{t=String(t||'').replace(/\D/g,'');return t&&t.length<=11?'55'+t:t};
+const tel=t=>{t=String(t||'').replace(/\D/g,'').replace(/^0+/,'');return t&&t.length<=11?'55'+t:t};
 function cham(){db.cm=$('#cmm').value;db.ch={h:$('#chh').value,t:$('#cht').value};save();const d=$('#cdt').value;
  if(!d){$('#cl').innerHTML='<li class="muted">Escolha a data da aula.</li>';return}
  const dia=DIAS[new Date(d+'T12:00').getDay()];
@@ -468,6 +468,7 @@ const FILT=['freq','rank','zap','cert','rel','rev','bib'];
 let ME=null,UNS=[],ready=false,stT=null,rT=null,rPend=false,rkT=null,rkLast='[]',anLast='',RK=null,AN=null,AF={};
 const ref=(...p)=>FB.doc(FB.fs,...p),col=(...p)=>FB.collection(FB.fs,...p);
 const hojeStr=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const soNum=t=>{let d=String(t||'').replace(/\D/g,'').replace(/^0+/,'');if(d.length>=12&&d.startsWith('55'))d=d.slice(2);return d};
 const slug=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'.').replace(/^\.+|\.+$/g,'');
 const canon=o=>JSON.stringify(o,(k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.keys(v).sort().reduce((r,x)=>(r[x]=v[x],r),{}):v);
 function st(m,er){const e=$('#st');e.textContent=m;e.className='on'+(er?' er':'');clearTimeout(stT);stT=setTimeout(()=>e.className='',3000)}
@@ -478,7 +479,7 @@ function subC(c,fn){sub(col(c),s=>fn(s.docs.map(d=>({id:d.id,...d.data()}))))}
 function sched(){clearTimeout(rT);rT=setTimeout(()=>{const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)&&!a.closest('#lg,#pw')){rPend=true;return}render()},200)}
 document.addEventListener('focusout',()=>{if(rPend){rPend=false;setTimeout(()=>{const a=document.activeElement;if(!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)))render()},250)}});
 
-function normLogin(v){let x=String(v||'').trim().toLowerCase().replace(/\s+/g,'');if(!x)return'';if(x.includes('@'))return x;if(/^[\d()+-]+$/.test(x))x=x.replace(/\D/g,'');return x+'@ebd.local'}
+function normLogin(v){let x=String(v||'').trim().toLowerCase().replace(/\s+/g,'');if(!x)return'';if(x.includes('@'))return x;if(/^[\d()+-]+$/.test(x))x=soNum(x);return x+'@ebd.local'}
 const msgAuth=e=>{const c=(e&&e.code)||'';if(/invalid-credential|wrong-password|user-not-found|invalid-email/.test(c))return'Usuário ou senha incorretos.';if(c.includes('too-many'))return'Muitas tentativas. Aguarde alguns minutos.';if(c.includes('network'))return'Sem conexão com a internet.';return'Não foi possível entrar: '+(c||(e&&e.message))};
 
 function mostrarLogin(msg){ready=false;ME=null;UNS.forEach(u=>u());UNS=[];document.body.className='';$('#lg').hidden=false;$('#le').textContent=msg||''}
@@ -592,7 +593,7 @@ function bib(){const alu=ME&&ME.papel==='aluno',q=($(alu?'#abq':'#bbq').value||'
 
 // ---------- acessos (criar logins) ----------
 const senhaIni=a=>a.nasc?a.nasc.split('-').reverse().join(''):'';
-function loginDe(a,usados){const dig=(a.t||'').replace(/\D/g,'');let b=dig||slug(a.n)||'aluno',c=b,i=1;
+function loginDe(a,usados){const dig=soNum(a.t);let b=dig||slug(a.n)||'aluno',c=b,i=1;
  if(usados.has(c))c=b+'.'+(slug(String(a.n).split(' ')[0])||'a');while(usados.has(c)){i++;c=b+'.'+i}return c}
 async function criarConta(email,senha){let sec=FB.getApps().find(a=>a.name==='sec');if(!sec)sec=FB.initializeApp(FB.cfg,'sec');
  const a2=FB.getAuth(sec),c=await FB.createUserWithEmailAndPassword(a2,email,senha);await FB.signOut(a2);return c.user.uid}
@@ -646,6 +647,8 @@ function renderAluno(){const hoje=hojeStr(),prox=db.datas.find(d=>d>=hoje),nome=
 function render(){if(!ME)return;$('#hig').textContent='('+String(db.igreja||'').toUpperCase()+')';
  if(ME.papel==='aluno')renderAluno();else{renderStaff();renderAcc();pubRank();pubAniv()}}
 
+function fmtTel(v){const d=soNum(v).slice(0,11);if(!d)return'';const k=d.length>10?7:6;let s='('+d.slice(0,2);if(d.length>2)s+=') '+d.slice(2,k);if(d.length>k)s+='-'+d.slice(k);return s}
+['at','pt','pastort'].forEach(id=>{const e=$('#'+id);if(e)e.addEventListener('input',()=>{e.value=fmtTel(e.value);try{e.setSelectionRange(e.value.length,e.value.length)}catch(x){}})});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 function iniciar(){FB.onAuthStateChanged(FB.auth,async u=>{if(!u){mostrarLogin();return}await abrir(u)});
  setInterval(()=>{if(ME&&ME.papel==='aluno'&&!document.hidden)lerFreq()},60000)}
