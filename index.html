@@ -176,6 +176,7 @@ footer.jls{border-top:0;margin-top:20px}
 .pos.p1{background:#f3d36b;color:#5b4300}.pos.p2{background:#d6dbe4;color:#3b4252}.pos.p3{background:#e0b48a;color:#5a3412}
 li.me{background:#fff6dd;border-radius:10px;padding-left:8px;padding-right:8px;font-weight:600}
 li .nm{display:flex;align-items:center}
+li details{margin-top:8px}li details summary{color:var(--ink2);font-weight:600;padding:4px 0}li details .lb{display:block;margin-top:10px;font-size:.85rem;color:#556}li details input,li details select{width:100%;margin-top:4px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 [hidden]{display:none!important}
 </style></head><body>
@@ -448,8 +449,8 @@ function rmBg(){db.bg='';$('#cfile').value='';bgUpd();pubBg()}
 function renderStaff(){
  $('#bo').value=db.bs.o;$('#bz').value=db.bs.z;$('#bx').value=db.bs.x;$('#by').value=db.bs.y;bgUpd();
  $('#cf').value=db.cf;$('#igreja').value=db.igreja;$('#pastor').value=db.pastor;$('#pastort').value=db.pastorT||'';
- $('#lp').innerHTML=db.profs.map(p=>`<li><span>${esc(p.n)}<br><small>${esc(p.t)}</small><br><label class="lb">Classe ${clSel(p.cl,'setPc',p.id,'Todas as classes')}</label></span><button class="x gest" title="Remover" onclick="del('profs','${p.id}')">×</button></li>`).join('');
- $('#la').innerHTML=db.alunos.map(a=>`<li><span>${esc(a.n)}<br><small>${[esc(a.t),a.nasc&&idade(a.nasc),a.nasc&&'nasc. '+fd(a.nasc),esc(a.classe)].filter(Boolean).join(' · ')||'sem dados'}</small><details><summary class="muted" style="cursor:pointer;font-size:.85rem">Editar classe e nascimento</summary><label class="lb">Classe ${clSel(a.classe,'setCl',a.id,'Sem classe')}</label><label class="lb">Nascimento<input type="date" value="${a.nasc||''}" onchange="setNasc('${a.id}',this.value)"></label></details></span><button class="x gest" title="Remover" onclick="del('alunos','${a.id}')">×</button></li>`).join('');
+ $('#lp').innerHTML=db.profs.map(p=>`<li><span>${esc(p.n)}<br><small>${esc(p.t)}</small><br><label class="lb">Classe ${clSel(p.cl,'setPc',p.id,'Todas as classes')}</label><details class="gest"><summary class="muted" style="cursor:pointer;font-size:.85rem">Editar nome e WhatsApp</summary><label class="lb">Nome<input value="${esc(p.n)}" onchange="setPNome('${p.id}',this.value)"></label><label class="lb">WhatsApp (com DDD, sem +55)<input value="${esc(p.t)}" inputmode="tel" oninput="this.value=fmtTel(this.value)" onchange="setPTel('${p.id}',this.value)"></label></details></span><button class="x gest" title="Remover" onclick="del('profs','${p.id}')">×</button></li>`).join('');
+ $('#la').innerHTML=db.alunos.map(a=>`<li><span>${esc(a.n)}<br><small>${[esc(a.t),a.nasc&&idade(a.nasc),a.nasc&&'nasc. '+fd(a.nasc),esc(a.classe)].filter(Boolean).join(' · ')||'sem dados'}</small><details><summary class="muted" style="cursor:pointer;font-size:.85rem">Editar dados do aluno</summary><label class="lb">Nome<input value="${esc(a.n)}" onchange="setNome('${a.id}',this.value)"></label><label class="lb">WhatsApp (com DDD, sem +55)<input value="${esc(a.t)}" inputmode="tel" oninput="this.value=fmtTel(this.value)" onchange="setTel('${a.id}',this.value)"></label><label class="lb">Classe ${clSel(a.classe,'setCl',a.id,'Sem classe')}</label><label class="lb">Data de nascimento<input type="date" value="${a.nasc||''}" onchange="setNasc('${a.id}',this.value)"></label><p class="muted" style="font-size:.8rem">Editar não apaga as presenças e faltas.</p></details></span><button class="x gest" title="Remover" onclick="del('alunos','${a.id}')">×</button></li>`).join('');
  $('#tq').value=db.trim.q||1;$('#tm').value=db.trim.mes||(db.trim.ini||'').slice(0,7);
  mat();rank();
  const sel=$('#zd').value;$('#zd').innerHTML=db.datas.map(d=>`<option value="${d}">${fd(d)}</option>`).join('');if(sel&&db.datas.includes(sel))$('#zd').value=sel;
@@ -538,7 +539,13 @@ async function saveBase(){db.igreja=$('#igreja').value.trim()||db.igreja;db.past
  await pubEscola();await W(()=>FB.setDoc(ref('config','equipe'),{pastorT:db.pastorT},{merge:true}));st('Dados salvos.');render()}
 function addP(){const n=$('#pn').value.trim();if(!n)return;const id=uid();W(()=>FB.setDoc(ref('professores',id),{n,t:$('#pt').value,cl:$('#pc').value}));$('#pn').value=$('#pt').value=$('#pc').value=''}
 function addA(){const n=$('#an').value.trim();if(!n)return;const id=uid();W(()=>FB.setDoc(ref('alunos',id),{n,t:$('#at').value,nasc:$('#ad').value,classe:$('#ac').value}));$('#an').value=$('#at').value=$('#ad').value=$('#ac').value=''}
-function setCl(id,v){W(()=>FB.updateDoc(ref('alunos',id),{classe:v}))}
+function setCl(id,v){const a=db.alunos.find(x=>x.id===id);W(async()=>{await FB.updateDoc(ref('alunos',id),{classe:v});if(a&&a.uid)FB.updateDoc(ref('perfis',a.uid),{classe:v}).catch(()=>{})})}
+function setNome(id,v){v=String(v||'').trim();if(!v){st('O nome não pode ficar vazio.',1);render();return}
+ const a=db.alunos.find(x=>x.id===id);if(a&&a.n===v)return;
+ W(async()=>{await FB.updateDoc(ref('alunos',id),{n:v});if(a&&a.uid)FB.updateDoc(ref('perfis',a.uid),{nome:v}).catch(()=>{});st('Nome atualizado. A frequência foi mantida.')})}
+function setTel(id,v){W(async()=>{await FB.updateDoc(ref('alunos',id),{t:fmtTel(v)});st('WhatsApp atualizado.')})}
+function setPNome(id,v){v=String(v||'').trim();if(!v){st('O nome não pode ficar vazio.',1);render();return}W(()=>FB.updateDoc(ref('professores',id),{n:v}))}
+function setPTel(id,v){W(()=>FB.updateDoc(ref('professores',id),{t:fmtTel(v)}))}
 function setPc(id,v){W(()=>FB.updateDoc(ref('professores',id),{cl:v}))}
 function setNasc(id,v){W(()=>FB.updateDoc(ref('alunos',id),{nasc:v}))}
 async function del(k,id){if(!confirm('Remover?'))return;
