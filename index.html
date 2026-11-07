@@ -383,7 +383,7 @@ function rank(){const s=stats(),li=a=>`<li><span>${esc(a.n)}<br><small>${a.p} pr
 function zap(){db.zm=$('#zm').value;save();const d=$('#zd').value;
  const fal=al().filter(a=>db.pres[d+'|'+a.id]==='F');
  $('#zl').innerHTML=fal.map(a=>{let t=a.t.replace(/\D/g,'');if(t&&t.length<=11)t='55'+t;
-  const m=db.zm.replace(/{nome}/g,a.n.split(' ')[0]).replace(/{data}/g,fd(d)).replace(/{igreja}/g,db.igreja);
+  const m=db.zm.replace(/{nome}/g,()=>a.n).replace(/{data}/g,fd(d)).replace(/{igreja}/g,db.igreja);
   return`<li><span>${esc(a.n)}<br><small>${esc(a.t)||'sem telefone'}</small></span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Enviar no WhatsApp</a>`:'<small>Cadastre o telefone</small>'}</li>`}).join('')
   ||'<li class="muted">Nenhuma falta marcada nesta data.</li>'}
 
@@ -405,13 +405,13 @@ function cham(){db.cm=$('#cmm').value;db.ch={h:$('#chh').value,t:$('#cht').value
  if(!d){$('#cl').innerHTML='<li class="muted">Escolha a data da aula.</li>';return}
  const dia=DIAS[new Date(d+'T12:00').getDay()];
  $('#cl').innerHTML=al().map(a=>{const t=tel(a.t),k=d+'|'+a.id,ok=db.env[k];
-  const m=db.cm.replace(/{nome}/g,a.n.split(' ')[0]).replace(/{dia}/g,dia).replace(/{data}/g,fd(d)).replace(/{hora}/g,db.ch.h?' às '+db.ch.h:'').replace(/{tema}/g,db.ch.t?'Tema: '+db.ch.t+'.':'').replace(/{igreja}/g,db.igreja).replace(/ {2,}/g,' ');
+  const m=db.cm.replace(/{nome}/g,()=>a.n).replace(/{dia}/g,dia).replace(/{data}/g,fd(d)).replace(/{hora}/g,db.ch.h?' às '+db.ch.h:'').replace(/{tema}/g,db.ch.t?'Tema: '+db.ch.t+'.':'').replace(/{igreja}/g,db.igreja).replace(/ {2,}/g,' ');
   return`<li><span>${esc(a.n)}<br><small>${ok?'✓ enviado':esc(a.t)||'sem telefone'}</small></span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}" onclick="env('${k}')">${ok?'Enviar de novo':'Chamar no WhatsApp'}</a>`:'<small>Cadastre o telefone</small>'}</li>`}).join('')||'<li class="muted">Cadastre os alunos.</li>'}
 const BMSG='Paz do Senhor, {nome}! Parabéns pelo seu aniversário ({idade} anos)! Que Deus abençoe ricamente a sua vida. Com carinho, {igreja}.';
 function aniv(){db.bmsg=$('#bmsg').value;save();const mes=+$('#bm').value,h=new Date(),ano=h.getFullYear();
  const l=al().filter(a=>a.nasc&&+a.nasc.slice(5,7)===mes).sort((a,b)=>a.nasc.slice(8)-b.nasc.slice(8));
  $('#bl').innerHTML=l.map(a=>{const dia=a.nasc.slice(8),id=ano-+a.nasc.slice(0,4),t=tel(a.t),hoje=+dia===h.getDate()&&mes===h.getMonth()+1;
-  const m=db.bmsg.replace(/{nome}/g,a.n.split(' ')[0]).replace(/{idade}/g,id).replace(/{igreja}/g,db.igreja);
+  const m=db.bmsg.replace(/{nome}/g,()=>a.n).replace(/{idade}/g,id).replace(/{igreja}/g,db.igreja);
   return`<li><span>${esc(a.n)}<br><small>dia ${dia} · faz ${id} anos${hoje?' · <b>hoje</b>':''}</small></span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Parabenizar</a>`:'<small>Sem telefone</small>'}</li>`}).join('')||'<li class="muted">Nenhum aniversariante neste mês.</li>';
  const sem=al().filter(a=>!a.nasc).length;$('#bn').textContent=sem?sem+' aluno(s) sem data de nascimento cadastrada.':''}
 const PMSG='Paz do Senhor, {prof}! Aniversariantes de hoje na Escola Bíblica: {lista}. Vamos parabenizá-los! {igreja}';
@@ -420,7 +420,7 @@ function avisoProf(){const h=new Date(),m=h.getMonth()+1,d=h.getDate();
  const l=db.alunos.filter(a=>a.nasc&&+a.nasc.slice(5,7)===m&&+a.nasc.slice(8)===d).map(a=>a.n+' ('+(h.getFullYear()-+a.nasc.slice(0,4))+' anos)').join(', ');
  $('#bd').hidden=!l;$('#bd').innerHTML=l?'Aniversariantes de hoje: <b>'+esc(l)+'</b> <button class="b g" onclick="goZap()">Avisar professores</button>':'';
  $('#pl').innerHTML=!l?'<li class="muted">Nenhum aniversariante hoje.</li>':db.profs.map(p=>{const t=tel(p.t),
-  msg=PMSG.replace(/{prof}/g,p.n.split(' ')[0]).replace(/{lista}/g,l).replace(/{igreja}/g,db.igreja);
+  msg=PMSG.replace(/{prof}/g,()=>p.n).replace(/{lista}/g,l).replace(/{igreja}/g,db.igreja);
   return`<li><span>${esc(p.n)}</span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(msg)}">Avisar no WhatsApp</a>`:'<small>Cadastre o WhatsApp</small>'}</li>`}).join('')||'<li class="muted">Cadastre os professores.</li>'}
 function rel(){const s=stats(),n=db.datas.length;let P=0,F=0;s.forEach(a=>{P+=a.p;F+=a.f});
  const med=P+F?Math.round(P/(P+F)*100):0,T=db.trim||{},li=a=>esc(a.n)+' ('+a.pct+'%)';
@@ -434,7 +434,7 @@ function rel(){const s=stats(),n=db.datas.length;let P=0,F=0;s.forEach(a=>{P+=a.
  <h3>Registro de presença por aula</h3><div class="scroll"><table><tr><th>Aluno</th>${db.datas.map(d=>`<th>${fd(d).slice(0,5)}</th>`).join('')}</tr>${nome.map(a=>`<tr><td>${esc(a.n)}</td>${db.datas.map(d=>{const v=db.pres[d+'|'+a.id]||'';return`<td class="${v}">${v||'-'}</td>`}).join('')}</tr>`).join('')}</table></div>`;
  const res='Histórico da Escola Bíblica ('+(T.nome||'trimestre')+(db.cf?', classe '+db.cf:'')+'): '+s.length+' alunos, '+n+' aulas, frequência média '+med+'%. Maior frequência: '+top.replace(/&amp;/g,'&')+'. Menor frequência: '+bot.replace(/&amp;/g,'&')+'. O PDF completo segue em anexo.';
  const dest=[...(db.pastor?[{n:db.pastor,t:db.pastorT,r:'Pastor'}]:[]),...pf().map(p=>({n:p.n,t:p.t,r:'Professor(a)'}))];
- $('#rs').innerHTML=dest.map(d=>{const t=tel(d.t),m='Paz do Senhor, '+d.n.split(' ')[0]+'! '+res;
+ $('#rs').innerHTML=dest.map(d=>{const t=tel(d.t),m='Paz do Senhor, '+d.n+'! '+res;
   return`<li><span>${esc(d.n)}<br><small>${d.r}</small></span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Enviar no WhatsApp</a>`:'<small>Cadastre o WhatsApp</small>'}</li>`}).join('')||'<li class="muted">Cadastre o pastor e os professores.</li>'}
 function env(k){db.env[k]=1;save();setTimeout(cham,300)}
 function bgUpd(v){db.bs={o:$('#bo').value,z:$('#bz').value,x:$('#bx').value,y:$('#by').value};save();
@@ -624,10 +624,11 @@ async function criarEquipe(){const m=$('#qm');m.textContent='';const nome=$('#qn
  try{const u=await criarConta(email,s),login=email.replace('@ebd.local','');
   await FB.setDoc(ref('perfis',u),{nome,papel:p,usuario:login,trocarSenha:true});m.textContent='Acesso criado. Usuário: '+login+'.';$('#qn').value=$('#qu').value=$('#qs').value=''}
  catch(e){m.textContent=e.code==='auth/email-already-in-use'?'Esse usuário já existe.':'Não foi possível criar: '+(e.code||e.message)}}
+
 function renderAcc(){const el=$('#acl');if(!el)return;
  el.innerHTML=db.alunos.slice().sort((a,b)=>a.n.localeCompare(b.n)).map(a=>{const sp=senhaIni(a),t=tel(a.t),
   stt=a.uid?'com acesso':(sp?'sem acesso':'falta a data de nascimento'),
-  m='Paz do Senhor, '+a.n.split(' ')[0]+'! Seu acesso à Escola Bíblica Dominical: endereço '+location.href.split('#')[0].split('?')[0]+' , usuário '+a.login+' , senha inicial '+sp+' (sua data de nascimento, só números). No primeiro acesso você troca a senha.';
+  m='Paz do Senhor, '+a.n+'! Seu acesso à Escola Bíblica Dominical: endereço '+location.href.split('#')[0].split('?')[0]+' , usuário '+a.login+' , senha inicial '+sp+' (sua data de nascimento, só números). No primeiro acesso você troca a senha.';
   return`<li><span>${esc(a.n)}<br><small>${a.login?'usuário '+esc(a.login)+' · ':''}${stt}</small></span><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${a.uid&&t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Enviar acesso</a>`:''}${a.uid?`<button class="b g" onclick="refazer('${a.id}')">Refazer acesso</button>`:''}</span></li>`}).join('')||'<li class="muted">Cadastre os alunos primeiro.</li>';
  const n=db.alunos.filter(a=>!a.uid&&senhaIni(a)).length;$('#accn').textContent=n?n+' aluno(s) sem acesso, prontos para criar.':'Nenhum aluno pendente.'}
 
