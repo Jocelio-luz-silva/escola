@@ -243,7 +243,7 @@ li details{margin-top:8px}li details summary{color:var(--ink2);font-weight:600;p
 </section>
 
 <section id="rev" class="ss">
- <div class="card no gest"><h2>Adicionar revista</h2>
+ <div class="card no"><h2>Adicionar revista</h2>
   <div class="row"><input id="rt" placeholder="Título (ex.: Revista do Aluno - Adultos)"><input id="rq" placeholder="Trimestre (ex.: 4º trimestre de 2026)"></div>
   <div class="row"><select id="rc"><option value="">Todas as classes</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select></div>
   <div class="row"><input id="rlk" type="url" placeholder="Link do arquivo (Google Drive: Compartilhar, qualquer pessoa com o link)"></div>
@@ -253,7 +253,7 @@ li details{margin-top:8px}li details summary{color:var(--ink2);font-weight:600;p
 </section>
 
 <section id="bib" class="ss">
- <div class="card no gest"><h2>Adicionar à biblioteca</h2>
+ <div class="card no"><h2>Adicionar bíblia, livro ou estudo</h2>
   <div class="row"><input id="bbt" placeholder="Título (ex.: Bíblia de Estudo)"><input id="bba" placeholder="Autor (opcional)"></div>
   <div class="row"><select id="bbc"><option>Bíblia</option><option>Livro</option><option>Estudo bíblico</option><option>Outro</option></select></div>
   <div class="row"><input id="blk" type="url" placeholder="Link do arquivo (Google Drive: Compartilhar, qualquer pessoa com o link)"></div>
@@ -281,6 +281,17 @@ li details{margin-top:8px}li details summary{color:var(--ink2);font-weight:600;p
  <div id="pr"></div>
 </section>
 
+<section id="ativ" class="ss">
+ <div class="card no"><h2>Nova atividade</h2>
+  <div class="row"><input id="at_t" placeholder="Título (ex.: Lição 3 - Perguntas)"></div>
+  <div class="row"><select id="at_c"><option value="">Todas as classes</option><option>Adultos</option><option>Jovens</option><option>Crianças</option></select><input id="at_p" type="date" title="Prazo de entrega (opcional)"></div>
+  <textarea id="at_d" style="min-height:90px" placeholder="Escreva as perguntas ou o que o aluno deve fazer"></textarea>
+  <div class="row"><input id="at_l" type="url" placeholder="Link de apoio (opcional, Google Drive ou outro)"></div>
+  <button class="b" onclick="addAtiv()">Publicar atividade</button>
+  <p class="muted">Os alunos da classe escolhida veem a atividade no menu e respondem pelo aplicativo. Abaixo você acompanha quem já respondeu e quem falta.</p></div>
+ <div id="atl"></div>
+</section>
+<section id="aativ" class="sa"></section>
 <section id="ainicio" class="sa"></section>
 <section id="afreq" class="sa"></section>
 <section id="arank" class="sa"></section>
@@ -330,7 +341,7 @@ try{
 </script>
 <script>
 const $=s=>document.querySelector(s);
-let db={igreja:'Assembleia de Deus Bela Rosa',pastor:'',pastorT:'',trim:{nome:'',ini:'',fim:''},profs:[],alunos:[],datas:[],pres:{},zm:'',ct:''};
+let db={atv:[],resp:{},igreja:'Assembleia de Deus Bela Rosa',pastor:'',pastorT:'',trim:{nome:'',ini:'',fim:''},profs:[],alunos:[],datas:[],pres:{},zm:'',ct:''};
 const LOC=['cf','zm','ct','cm','ch','bmsg','bs','env'];
 try{Object.assign(db,JSON.parse(localStorage.getItem('eb_local')||'{}'))}catch(e){}
 const save=()=>{try{const l={};LOC.forEach(k=>l[k]=db[k]);localStorage.setItem('eb_local',JSON.stringify(l))}catch(e){}};
@@ -502,6 +513,7 @@ async function abrir(u){
 function ouvir(){
  sub(ref('publico','escola'),s=>{const d=s.data()||{};if(d.igreja)db.igreja=d.igreja;db.pastor=d.pastor||'';db.trim=d.trim||{nome:'',ini:'',fim:''};db.datas=d.datas||[];sched();if(ME&&ME.papel==='aluno')lerFreq()});
  subC('materiais',a=>{db.revs=a.filter(x=>x.tipo==='revista');db.livs=a.filter(x=>x.tipo==='livro');sched()});
+ subC('atividades',a=>{db.atv=a;sched();if(ME&&ME.papel==='aluno')lerResp()});
  if(ME.papel==='aluno'){
   sub(ref('ranking','atual'),s=>{RK=s.data()||{itens:[]};sched()});
   sub(ref('publico','aniversariantes'),s=>{AN=s.data()||{};sched()});return}
@@ -509,6 +521,7 @@ function ouvir(){
  subC('alunos',a=>{db.alunos=a.map(x=>({id:x.id,n:x.n||'',t:x.t||'',nasc:x.nasc||'',classe:x.classe||'',uid:x.uid||'',login:x.login||'',ant:x.ant||[]}));sched()});
  subC('professores',a=>{db.profs=a.map(x=>({id:x.id,n:x.n||'',t:x.t||'',cl:x.cl||''}));sched()});
  subC('frequencia',a=>{const p={};a.forEach(x=>{p[x.data+'|'+x.alunoId]=x.v});db.pres=p;sched()});
+ subC('respostas',a=>{const m={};a.forEach(x=>{(m[x.atv]=m[x.atv]||{})[x.alunoId]=x});db.resp=m;sched()});
  sub(ref('ranking','atual'),s=>{rkLast=canon((s.data()||{}).itens||[])});
  sub(ref('publico','aniversariantes'),s=>{const d=s.data();anLast=d?d.mes+canon(d.itens||[]):''})}
 
@@ -517,10 +530,11 @@ function go(t){document.querySelectorAll('section').forEach(x=>x.classList.remov
  document.querySelectorAll('#dr button[data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
  $('#cfb').hidden=!FILT.includes(t);drawer(false);
  if(ME&&ME.papel==='aluno'&&(t==='afreq'||t==='ainicio'))lerFreq();
+ if(ME&&ME.papel==='aluno'&&(t==='aativ'||t==='ainicio'))lerResp();
  render();window.scrollTo(0,0)}
 function drawer(v){const o=v===undefined?!$('#dr').classList.contains('on'):v;$('#dr').classList.toggle('on',o);$('#ov').hidden=!o}
-function montaMenu(){const p=ME.papel,it=p==='aluno'?[['ainicio','Início'],['afreq','Minha frequência'],['arank','Ranking'],['arev','Revistas'],['abib','Biblioteca'],['sen','Trocar senha']]
- :[['cad','Cadastros'],['freq','Frequência'],['rank','Ranking'],['zap','WhatsApp'],['cert','Certificados'],['rel','Relatório'],['rev','Revistas'],['bib','Biblioteca'],...(p==='professor'?[]:[['acc','Acessos']]),['sen','Trocar senha']];
+function montaMenu(){const p=ME.papel,it=p==='aluno'?[['ainicio','Início'],['afreq','Minha frequência'],['aativ','Atividades'],['arank','Ranking'],['arev','Revistas'],['abib','Biblioteca'],['sen','Trocar senha']]
+ :[['cad','Cadastros'],['freq','Frequência'],['rank','Ranking'],['zap','WhatsApp'],['cert','Certificados'],['rel','Relatório'],['ativ','Atividades'],['rev','Revistas'],['bib','Biblioteca'],...(p==='professor'?[]:[['acc','Acessos']]),['sen','Trocar senha']];
  $('#dr').innerHTML='<div class="dh"><img class="logo" alt="" src="'+document.querySelector('#lg img.logo').src+'"><div><b>Escola Bíblica Dominical</b><small>'+esc(db.igreja||'')+'</small></div></div>'+it.map(([t,n])=>`<button data-t="${t}" onclick="go('${t}')">${n}</button>`).join('')+'<button onclick="sair()">Sair</button>'}
 function goZap(){go('zap')}
 
@@ -580,22 +594,23 @@ function pubAniv(){if(!ME||ME.papel==='aluno'||!ready)return;const m=new Date().
 
 // ---------- revistas e biblioteca por link (Google Drive) ----------
 const dlink=l=>{l=String(l);const m=l.match(/drive\.google\.com\/file\/d\/([\w-]+)/)||(/drive\.google\.com/.test(l)&&l.match(/[?&]id=([\w-]+)/));return m?'https://drive.google.com/uc?export=download&id='+m[1]:l};
+const podeDel=r=>!!ME&&ME.papel!=='aluno'&&(ME.papel!=='professor'||r.por===ME.uid);
 const okLink=l=>/^https?:\/\/\S+$/i.test(l);
-const matLi=(r,sub,del)=>`<li><span>${esc(r.t)}<br><small>${sub}</small></span><span style="display:flex;gap:6px;align-items:center"><a class="b" href="${esc(dlink(r.link))}" target="_blank" rel="noopener">Baixar</a><a class="b g" href="${esc(r.link)}" target="_blank" rel="noopener">Abrir</a>${del?`<button class="x gest" title="Remover" onclick="delMat('${r.id}')">×</button>`:''}</span></li>`;
+const matLi=(r,sub,del)=>`<li><span>${esc(r.t)}<br><small>${sub}</small></span><span style="display:flex;gap:6px;align-items:center"><a class="b" href="${esc(dlink(r.link))}" target="_blank" rel="noopener">Baixar</a><a class="b g" href="${esc(r.link)}" target="_blank" rel="noopener">Abrir</a>${del?`<button class="x" title="Remover" onclick="delMat('${r.id}')">×</button>`:''}</span></li>`;
 function addRev(){const l=$('#rlk').value.trim();if(!okLink(l))return alert('Cole o link completo do arquivo (começa com https://).');
  const id=uid(),t=$('#rt').value.trim()||'Revista',q=$('#rq').value.trim()||db.trim.nome||'',c=$('#rc').value;
- W(()=>FB.setDoc(ref('materiais',id),{tipo:'revista',t,q,c,link:l,dt:hojeStr()}));$('#rt').value=$('#rlk').value=''}
+ W(()=>FB.setDoc(ref('materiais',id),{tipo:'revista',t,q,c,link:l,dt:hojeStr(),por:ME.uid,pn:ME.nome||''}));$('#rt').value=$('#rlk').value=''}
 function addLiv(){const l=$('#blk').value.trim();if(!okLink(l))return alert('Cole o link completo do arquivo (começa com https://).');
  const id=uid(),t=$('#bbt').value.trim()||'Sem título',a=$('#bba').value.trim(),k=$('#bbc').value;
- W(()=>FB.setDoc(ref('materiais',id),{tipo:'livro',t,a,k,link:l,dt:hojeStr()}));$('#bbt').value=$('#bba').value=$('#blk').value=''}
+ W(()=>FB.setDoc(ref('materiais',id),{tipo:'livro',t,a,k,link:l,dt:hojeStr(),por:ME.uid,pn:ME.nome||''}));$('#bbt').value=$('#bba').value=$('#blk').value=''}
 function delMat(id){if(!confirm('Remover este item?'))return;W(()=>FB.deleteDoc(ref('materiais',id)))}
 function revs(){const alu=ME&&ME.papel==='aluno',cl=alu?ME.classe:db.cf;
  const l=db.revs.filter(r=>!cl||!r.c||r.c===cl).sort((a,b)=>(b.dt||'').localeCompare(a.dt||''));
- const h=l.map(r=>matLi(r,[esc(r.q),esc(r.c||'Todas as classes')].filter(Boolean).join(' · '),!alu)).join('')||'<li class="muted">Nenhuma revista adicionada.</li>';
+ const h=l.map(r=>matLi(r,[esc(r.q),esc(r.c||'Todas as classes')].filter(Boolean).join(' · '),podeDel(r))).join('')||'<li class="muted">Nenhuma revista adicionada.</li>';
  const e=$(alu?'#arv':'#rv');if(e)e.innerHTML=h}
 function bib(){const alu=ME&&ME.papel==='aluno',q=($(alu?'#abq':'#bbq').value||'').trim().toLowerCase(),k=alu?'':$('#bbk').value;
  const l=db.livs.filter(x=>(!k||x.k===k)&&(!q||((x.t||'')+' '+(x.a||'')).toLowerCase().includes(q))).sort((a,b)=>(a.t||'').localeCompare(b.t||''));
- const h=l.map(x=>matLi(x,[esc(x.a),esc(x.k)].filter(Boolean).join(' · '),!alu)).join('')||'<li class="muted">'+(db.livs.length?'Nada encontrado.':'Nenhum item na biblioteca.')+'</li>';
+ const h=l.map(x=>matLi(x,[esc(x.a),esc(x.k)].filter(Boolean).join(' · '),podeDel(x))).join('')||'<li class="muted">'+(db.livs.length?'Nada encontrado.':'Nenhum item na biblioteca.')+'</li>';
  const e=$(alu?'#abl':'#bbl');if(e)e.innerHTML=h;if(!alu)$('#bbu').textContent=db.livs.length?db.livs.length+' item(ns) na biblioteca.':''}
 
 // ---------- acessos (criar logins) ----------
@@ -632,6 +647,48 @@ function renderAcc(){const el=$('#acl');if(!el)return;
   return`<li><span>${esc(a.n)}<br><small>${a.login?'usuário '+esc(a.login)+' · ':''}${stt}</small></span><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${a.uid&&t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Enviar acesso</a>`:''}${a.uid?`<button class="b g" onclick="refazer('${a.id}')">Refazer acesso</button>`:''}</span></li>`}).join('')||'<li class="muted">Cadastre os alunos primeiro.</li>';
  const n=db.alunos.filter(a=>!a.uid&&senhaIni(a)).length;$('#accn').textContent=n?n+' aluno(s) sem acesso, prontos para criar.':'Nenhum aluno pendente.'}
 
+
+// ---------- atividades ----------
+let AR={},OPEN={},RD={};
+function addAtiv(){const t=$('#at_t').value.trim(),d=$('#at_d').value.trim(),l=$('#at_l').value.trim();
+ if(!t)return alert('Informe o título da atividade.');if(!d&&!l)return alert('Escreva o que o aluno deve fazer ou cole um link.');
+ if(l&&!okLink(l))return alert('O link precisa começar com https://');
+ W(()=>FB.setDoc(ref('atividades',uid()),{t,d,l,c:$('#at_c').value,prazo:$('#at_p').value,dt:Date.now(),por:ME.uid,pn:ME.nome||''})).then(r=>{if(r!==null){st('Atividade publicada.');$('#at_t').value=$('#at_d').value=$('#at_l').value=$('#at_p').value=''}})}
+async function delAtiv(id){if(!confirm('Apagar esta atividade e todas as respostas dos alunos?'))return;
+ const rs=Object.values((db.resp||{})[id]||{});
+ await W(async()=>{for(let i=0;i<=rs.length;i+=400){const b=FB.writeBatch(FB.fs);rs.slice(i,i+400).forEach(r=>b.delete(ref('respostas',id+'_'+r.alunoId)));if(i+400>=rs.length)b.delete(ref('atividades',id));await b.commit()}return 1})}
+const atvAlvo=a=>db.alunos.filter(x=>!a.c||x.classe===a.c).sort((x,y)=>x.n.localeCompare(y.n));
+const prazoTxt=a=>a.prazo?'prazo '+fd(a.prazo):'sem prazo';
+function renderAtiv(){const el=$('#atl');if(!el)return;
+ const l=(db.atv||[]).slice().sort((a,b)=>(b.dt||0)-(a.dt||0));
+ el.innerHTML=l.map(a=>{const al=atvAlvo(a),rs=(db.resp||{})[a.id]||{},ok=al.filter(x=>rs[x.id]),falta=al.filter(x=>!rs[x.id]),pct=al.length?Math.round(ok.length/al.length*100):0,
+  vencida=a.prazo&&a.prazo<hojeStr(),pode=ME.papel!=='professor'||a.por===ME.uid;
+  const lista=ok.map(x=>`<li><span><b>${esc(x.n)}</b><br><small>${esc(rs[x.id].txt||'(sem texto)')}</small></span></li>`).join('')||'<li class="muted">Ninguém respondeu ainda.</li>';
+  const pend=falta.map(x=>{const t=tel(x.t),m='Paz do Senhor, '+x.n+'! Você ainda não respondeu a atividade "'+a.t+'" da Escola Bíblica Dominical. Entre no aplicativo, abra o menu Atividades e envie a sua resposta.';
+   return`<li><span>${esc(x.n)}<br><small>${esc(x.classe||'')}</small></span>${t?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${t}?text=${encodeURIComponent(m)}">Lembrar</a>`:'<small>sem WhatsApp</small>'}</li>`}).join('')||'<li class="muted">Todos responderam.</li>';
+  return`<div class="card"><h2>${esc(a.t)}</h2>
+  <p class="muted">${esc(a.c||'Todas as classes')} · ${prazoTxt(a)}${vencida?' (encerrado)':''} · por ${esc(a.pn||'—')}</p>
+  ${a.d?'<p style="white-space:pre-wrap;margin:8px 0">'+esc(a.d)+'</p>':''}${a.l?`<p><a class="b g" href="${esc(a.l)}" target="_blank" rel="noopener">Abrir link de apoio</a></p>`:''}
+  <p><b>${ok.length}</b> de <b>${al.length}</b> responderam (${pct}%)</p><div class="bar"><i style="width:${pct}%"></i></div>
+  <details style="margin-top:12px" ${OPEN[a.id+'f']?'open':''} ontoggle="OPEN['${a.id}f']=this.open"><summary><b>Faltam responder (${falta.length})</b></summary><ul>${pend}</ul></details>
+  <details style="margin-top:8px" ${OPEN[a.id+'r']?'open':''} ontoggle="OPEN['${a.id}r']=this.open"><summary><b>Já responderam (${ok.length})</b></summary><ul>${lista}</ul></details>
+  ${pode?`<p style="margin-top:12px"><button class="x" style="width:auto;padding:6px 12px" onclick="delAtiv('${a.id}')">Apagar atividade</button></p>`:''}</div>`}).join('')||'<div class="card"><p class="muted">Nenhuma atividade publicada ainda.</p></div>'}
+
+async function lerResp(){if(!ME||ME.papel!=='aluno')return;
+ try{const l=minhasAtiv(),rs=await Promise.all(l.map(a=>FB.getDoc(ref('respostas',a.id+'_'+ME.alunoId))));const n={};rs.forEach((s,i)=>{if(s.exists())n[l[i].id]=s.data()});
+  if(canon(n)!==canon(AR)){AR=n;renderAluno()}}catch(e){console.error(e)}}
+const minhasAtiv=()=>(db.atv||[]).filter(a=>!a.c||a.c===ME.classe).sort((a,b)=>(b.dt||0)-(a.dt||0));
+async function enviarResp(id){const t=($('#rr_'+id).value||'').trim();if(!t)return alert('Escreva a sua resposta antes de enviar.');
+ const r=await W(()=>FB.setDoc(ref('respostas',id+'_'+ME.alunoId),{atv:id,alunoId:ME.alunoId,n:ME.nome||'',txt:t,dt:Date.now()}));
+ if(r!==null){delete RD[id];st('Resposta enviada.');lerResp()}}
+function renderAtivAluno(){const el=$('#aativ');if(!el)return;
+ el.innerHTML=minhasAtiv().map(a=>{const r=AR[a.id],vencida=a.prazo&&a.prazo<hojeStr(),v=RD[a.id]!==undefined?RD[a.id]:(r?r.txt:'');
+  return`<div class="card"><h2>${esc(a.t)}</h2>
+  <p class="muted">${prazoTxt(a)}${vencida?' (encerrado)':''} · ${r?'<b style="color:#1f9d57">Respondida</b>':'<b style="color:#b3541e">Pendente</b>'}</p>
+  ${a.d?'<p style="white-space:pre-wrap;margin:8px 0">'+esc(a.d)+'</p>':''}${a.l?`<p><a class="b g" href="${esc(a.l)}" target="_blank" rel="noopener">Abrir link de apoio</a></p>`:''}
+  <textarea id="rr_${a.id}" style="min-height:90px;margin-top:8px" placeholder="Escreva aqui a sua resposta" oninput="RD['${a.id}']=this.value">${esc(v)}</textarea>
+  <button class="b" onclick="enviarResp('${a.id}')">${r?'Atualizar resposta':'Enviar resposta'}</button></div>`}).join('')||'<div class="card"><p class="muted">Nenhuma atividade por enquanto.</p></div>'}
+
 // ---------- tela do aluno ----------
 async function lerFreq(){if(!ME||ME.papel!=='aluno')return;const ds=db.datas;
  try{const rs=await Promise.all(ds.map(d=>FB.getDoc(ref('frequencia',d+'_'+ME.alunoId))));const n={};rs.forEach((s,i)=>{if(s.exists())n[ds[i]]=s.data().v});
@@ -643,6 +700,7 @@ function renderAluno(){const hoje=hojeStr(),prox=db.datas.find(d=>d>=hoje),nome=
  $('#ainicio').innerHTML=`<div class="hi">Paz do Senhor, ${esc(nome)}!</div>
  <div class="hero"><small>Próxima aula</small>${prox?'<div class="big">'+dd(prox)+', '+fd(prox)+'</div><div class="mut">'+em(prox)+'</div>':'<div class="big">Sem aula marcada</div><div class="mut">Aguarde a divulgação do calendário.</div>'}</div>
  <div class="card"><h2>Calendário${db.trim&&db.trim.nome?' - '+esc(db.trim.nome):''}</h2><div class="chips">${chips}</div></div>
+ ${(()=>{const n=minhasAtiv().filter(a=>!AR[a.id]).length;return n?`<div class="card"><h2>Atividades</h2><p>Você tem <b>${n}</b> atividade(s) para responder.</p><button class="b" onclick="go('aativ')">Ver atividades</button></div>`:''})()}
  <div class="card"><h2>Aniversariantes do mês</h2>${an.length?'<ul>'+an.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<p class="muted">Nenhum aniversariante neste mês.</p>'}</div>`;
  let p=0,f=0;db.datas.forEach(d=>{if(AF[d]==='P')p++;else if(AF[d]==='F')f++});const pct=p+f?Math.round(p/(p+f)*100):0;
  $('#afreq').innerHTML=`<div class="card"><h2>Minha frequência</h2><div class="tiles"><div class="tile"><b>${p}</b><span>Presenças</span></div><div class="tile"><b>${f}</b><span>Faltas</span></div><div class="tile"><b>${pct}%</b><span>Frequência</span></div></div><div class="bar"><i style="width:${pct}%"></i></div></div>
@@ -650,10 +708,10 @@ function renderAluno(){const hoje=hojeStr(),prox=db.datas.find(d=>d>=hoje),nome=
  const R=(RK&&RK.itens)||[];
  const mi=R.findIndex(a=>a.id===ME.alunoId);
  $('#arank').innerHTML='<div class="card"><h2>Ranking de frequência</h2>'+(mi>=0?'<p class="muted">Sua posição: <b>'+(mi+1)+'º</b> de '+R.length+'</p>':'')+'<ul>'+(R.map((a,i)=>`<li${a.id===ME.alunoId?' class="me"':''}><span class="nm"><span class="pos${i<3?' p'+(i+1):''}">${i+1}</span><span>${esc(a.n)}<br><small>${esc(a.classe||'')}</small></span></span><span class="pct">${a.pct}%</span></li>`).join('')||'<li class="muted">O ranking ainda não foi publicado.</li>')+'</ul></div>';
- revs();bib()}
+ revs();bib();renderAtivAluno()}
 
 function render(){if(!ME)return;$('#hig').textContent='('+String(db.igreja||'').toUpperCase()+')';
- if(ME.papel==='aluno')renderAluno();else{renderStaff();renderAcc();pubRank();pubAniv()}}
+ if(ME.papel==='aluno')renderAluno();else{renderStaff();renderAcc();renderAtiv();pubRank();pubAniv()}}
 
 function fmtTel(v){const d=soNum(v).slice(0,11);if(!d)return'';const k=d.length>10?7:6;let s='('+d.slice(0,2);if(d.length>2)s+=') '+d.slice(2,k);if(d.length>k)s+='-'+d.slice(k);return s}
 ['at','pt','pastort'].forEach(id=>{const e=$('#'+id);if(e)e.addEventListener('input',()=>{e.value=fmtTel(e.value);try{e.setSelectionRange(e.value.length,e.value.length)}catch(x){}})});
